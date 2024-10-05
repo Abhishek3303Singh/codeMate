@@ -4,13 +4,14 @@
   "description": "This is Tender for devlopers",
   "main": "index.js",
   "scripts": {
-    "start":"nodemon src/app.js",
-
+    "start": "nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Abhishek",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.0"
+    "body-parser": "^1.20.3",
+    "express": "^4.21.0",
+    "mongoose": "^8.7.0"
   }
 }
