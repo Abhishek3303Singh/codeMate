@@ -15,8 +15,6 @@ const userSchema = new mongoose.Schema({
   contact: {
     type: Number,
     required: true,
-    min: 10,
-    max: 10,
   },
   email: {
     type: String,
@@ -28,7 +26,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minLength: 8,
-    maxLength: 50,
+    maxLength: 150,
   },
 },
 {

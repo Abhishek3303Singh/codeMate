@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("../src/cofig/database");
 const User = require("./models/user");
+const UserProfile = require("./models/userProfile")
 const app = express();
 var bodyParser = require("body-parser");
 
@@ -76,6 +77,7 @@ app.post("/login", (req, res) => {
   res.send("Login successfully!!");
 });
 
+// signup
 app.post("/signup", async (req, res) => {
   const user = new User(req.body);
 
@@ -83,7 +85,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
     res.status(200).send("user signUp sucessfully😎");
   } catch (err) {
-    res.status(500).send("Error", err.message);
+    res.status(500).send("Error"+ err.message);
   }
 });
 /// get user Data
@@ -126,6 +128,42 @@ app.patch("/user", async(req, res)=>{
         res.status(400).send(err.message)
 
     }
+})
+
+
+// USER PROFILE 
+
+//  CREATE PROFILE
+
+
+app.post("/profile", async(req, res)=>{
+    const profileData = req.body
+    try{
+        const profile = await new UserProfile(profileData)
+
+        await profile.save()
+        res.status(200).send("profile created successfully😊")
+    }
+    catch(err){
+        res.status(400).send("Something went wrong"+err.message)
+    }
+   
+})
+
+
+/// Update user Profile /// 
+
+app.patch('/update/profile', async(req, res)=>{
+    const userId = req.body.userId
+    const profileData = req.body
+    try{
+        const response = await UserProfile.findByIdAndUpdate(userId, profileData, {returnDocument:"after", runValidators:true})
+        res.status(200).send(response)
+    }
+    catch(err){
+        res.status(400).send("Something went wrong"+err.message)
+    }
+
 })
 
 connectDB()
