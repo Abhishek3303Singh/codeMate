@@ -1,10 +1,16 @@
 const mongoose = require("mongoose")
 
 const userProfileSchema = new mongoose.Schema({
+
+    user: {
+        type: mongoose.Schema.Types.ObjectId,  // Reference to User model
+        ref: 'User',
+        required: true
+    },
     userName:{
         type:String,
         required:true,
-        maxLength:100,
+        maxLength:100, 
         unique:true
     
     },
@@ -27,8 +33,19 @@ const userProfileSchema = new mongoose.Schema({
             }
         }
     },
-    photos:[String],
-    skills:[String],
+    photos:{
+        type:[String]
+    },
+    skills:{
+        type:[String],
+        required:true,
+        validate(value){
+            if(value.length>15){
+                throw new Error('More then 15 skills are not allowed')
+            }
+        }
+    
+    },
     experienceLevel:{
         type:String,
         default:"I am new Devloper",

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator")
 
 // Schema -> Defining the cluster
 const userSchema = new mongoose.Schema({
@@ -21,6 +22,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true,
+    validate(value){
+      if(!validator.isEmail(value)){
+        throw new Error ("Invalid Email Addrress"+value)
+      }
+    }
   },
   password: {
     type: String,
