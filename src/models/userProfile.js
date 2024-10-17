@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 const userProfileSchema = new mongoose.Schema({
 
-    user: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,  // Reference to User model
         ref: 'User',
         required: true
@@ -53,10 +53,12 @@ const userProfileSchema = new mongoose.Schema({
     },
     github:{
         type:String,
-        maxLength:300
+        maxLength:300,
+        required:true
     },
     projects:{
-        type:String
+        type:[String],
+        required:true
     }
 
 })

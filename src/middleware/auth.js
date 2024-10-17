@@ -16,18 +16,23 @@ const isUserAuthenticated = async(req, res, next)=>{
         const decodedData = await jwt.verify(token, SECREATKEY)
 
         const {_id} = decodedData
+        // console.log(_id)
 
-        const user = User.findById(_id)
+        const user = await User.findById(_id)
+        // console.log(user)
         if(!user){
             throw new Error('user not valid')
         }
 
         // attached the user to req object with user key 
+        else{
+            req.user = user
+            // console.log(user)
 
-        req.user = user
-
-        // control goes back to req handler
-        next()
+            // control goes back to req handler
+            next()
+        }
+        
     }
     catch(err){
         res.status(400).send("Error:"+err.message)

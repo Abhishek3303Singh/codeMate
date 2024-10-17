@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator")
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcryptjs")
+const SECREATKEY = "PRIYAMeriJaanAbhi@Baby@0118";
 
 // Schema -> Defining the cluster
 const userSchema = new mongoose.Schema({
@@ -40,6 +43,23 @@ const userSchema = new mongoose.Schema({
 }
 
 );
+
+// Mehods to offload creat token from login and signup because this is user things
+userSchema.methods.getJWT = async function(){
+  const user = this 
+  const token = await jwt.sign({_id:user._id},SECREATKEY,{
+    expiresIn:"1d"
+  } )
+  return token
+}
+
+// Methods to validate password
+userSchema.methods.validatePassword=async function(userInputPassword){
+  const user = this
+  const hashPassword = user.password
+  const isPasswordValid = await bcrypt.compare(userInputPassword, hashPassword)
+  return isPasswordValid
+}
 
 // creating The Model for userSchema
 

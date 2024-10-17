@@ -79,23 +79,7 @@ const { validateSignupData } = require("./utils/validator");
 
 // Note -- We Should always send the response to avoid handing //
 
-const isAuthenticated = async (req, res, next) => {
-  try{
-    const {token} = req.cookies;
-  
-  const decodedMessage = await jwt.verify(token, SECREATKEY);
-  const { _id } = decodedMessage;
-  if (!_id) {
-    throw new Error("Please Login..");
-  }
-  req.user = await User.findById(_id);
-  console.log(req.user);
-  next();
-  }
-  catch(err){
-    res.send('please Authenticate..')
-  }
-};
+
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -105,13 +89,17 @@ app.post("/login", async (req, res) => {
       throw new Error("Enter Valid id or password");
     } else {
       // Check the password
-      const isPasswordValid = bcrypt.compare(password, userData.password);
+      // const isPasswordValid = bcrypt.compare(password, userData.password);
+      const isPasswordValid = userData.validatePassword(password)
       if (!isPasswordValid) {
         throw new Error("Enter Valid id or password");
       } else {
         // if password and id is valid now we created a token
 
-        const token = jwt.sign({ _id: userData._id }, SECREATKEY);
+        // const token = jwt.sign({ _id: userData._id }, SECREATKEY,{
+        //     expiresIn:'1d'
+        // });
+        const token = await userData.getJWT()
 
         res.status(200).cookie("token", token);
         res.status(200).send("Login successfully");
@@ -144,7 +132,14 @@ app.post("/signup", async (req, res) => {
         password: hashPassword,
       });
       await user.save();
-      res.status(200).send("user signUp sucessfully😎");
+    //   const token = jwt.sign({_id:user._id}, SECREATKEY, {
+    //     expiresIn:"1d"
+    //   })
+
+    const token = await user.getJWT()
+
+      res.status(200).cookie("token", token)
+      res.status(200).send(user);
     }
   } catch (err) {
     res.status(500).send("Error :" + err.message);
@@ -191,25 +186,34 @@ app.patch("/user", async (req, res) => {
   }
 });
 
-app.get("/user/profile", async (req, res, next) => {
-  try {
-    isAuthenticated(req, res, next)
-    
-
-    res.status(200).send('user authenticated');
-  } catch (err) {
-    res.status(500).send("Error:" + err.message);
-  }
-});
-
 // USER PROFILE
 
 //  CREATE PROFILE
 
-app.post("/profile", async (req, res) => {
-  const profileData = req.body;
+app.post("/profile", isUserAuthenticated, async (req, res) => {
+    // console.log(req.user)
+  const {
+    userName,
+    contact,
+    gender,
+    photos,
+    skills,
+    experienceLevel,
+    github,
+    projects
+  } = req.body;
   try {
-    const profile = await new UserProfile(profileData);
+    const profile = await new UserProfile({
+        userId:req.user._id,
+        userName,
+        contact,
+        gender,
+        photos,
+        skills,
+        experienceLevel,
+        github,
+        projects
+    });
 
     await profile.save();
     res.status(200).send("profile created successfully😊");
@@ -217,13 +221,27 @@ app.post("/profile", async (req, res) => {
     res.status(400).send("Something went wrong" + err.message);
   }
 });
+//  Get profile
+app.get("/my/profile", isUserAuthenticated, async (req, res) => {
+    //   const userId = req.params.id;
+    const userId = req.user._id
+      try {
+        const userData = await UserProfile.findOne({userId:userId});
+        if(!userData){
+            throw new Error("user not found please create user")
+        }
+        res.status(200).send(userData);
+      } catch (err) {
+        res.status(400).send("Error:-" + err.message);
+      }
+    });
 
 /// Update user Profile ///
 
-app.patch("/profile/udpdate/:userId", async (req, res) => {
+app.patch("/profile/udpdate/:userId", isUserAuthenticated, async (req, res) => {
   const userId = req.params.userId;
   const profileData = req.body;
-  // console.log(profileData)
+//   console.log(profileData)
   try {
     const response = await UserProfile.findByIdAndUpdate(userId, profileData, {
       returnDocument: "after",
@@ -234,16 +252,8 @@ app.patch("/profile/udpdate/:userId", async (req, res) => {
     res.status(400).send("Something went wrong" + err.message);
   }
 });
-//  Get profile
-app.get("/profile/:id", async (req, res) => {
-  const userId = req.params.id;
-  try {
-    const userData = await UserProfile.findById(userId);
-    res.status(200).send(userData);
-  } catch (err) {
-    res.status(400).send("something went Wrong" + err.message);
-  }
-});
+
+
 
 connectDB()
   .then(() => {
