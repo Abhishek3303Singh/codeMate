@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema({
     minLength: 8,
     maxLength: 150,
   },
+  profile:{type:mongoose.Schema.Types.ObjectId, ref:"UserProfile"}
 },
 {
     timestamps:true

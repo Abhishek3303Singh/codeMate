@@ -3,10 +3,12 @@ const mongoose = require("mongoose")
 const connectionRequestSchema = new mongoose.Schema({
     senderId:{
         type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
         required:true
     },
     receiverId:{
-        type:mongoose.mongoose.Schema.Types.ObjectId,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
         required:true
     },
     status:{
@@ -15,6 +17,16 @@ const connectionRequestSchema = new mongoose.Schema({
             values:["interested", "ignored", "rejected",'accepted'],
             message:`{Value} is not a status type`
         }
+    },
+    senderProfileId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"UserProfile",
+        required:true
+    },
+    receiverProfileId:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"UserProfile",
+        required:true
     }
 },
 {

@@ -34,6 +34,15 @@ app.use("/",userRouter)
 const connectionRoute = require("./routes/connectionRequest")
 app.use("/", connectionRoute)
 
+// userData route 
+const userData = require("./routes/userData")
+app.use("/",userData)
+
+// feed route
+
+const feed = require("./routes/feed")
+app.use("/", feed)
+
 
 
 
