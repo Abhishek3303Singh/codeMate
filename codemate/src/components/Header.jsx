@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 const Header = () => {
     return (
         <>
-            <div className="grid grid-flow-col shadow-lg p-4 text-white
+            <div className="sticky top-0 z-50 grid grid-flow-col shadow-lg p-4 text-white
         bg-gradient-to-r from-[#090819] from-0% via-[#060917] via-30% via-[#030a0f] via-65% to-[#330626] to-100%...
         ">
                 <div className="flex justify-center items-center col-span-1">

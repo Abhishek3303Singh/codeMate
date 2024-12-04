@@ -5,7 +5,7 @@ import { FiUsers, FiMail, FiBell, FiSettings } from "react-icons/fi";
 const Sidebar = () => {
   return (
     <>
-    <div className="h-screen w-80 bg-gradient-to-r from-[#18031b] from-0% via-[#030f46] via-30% via-[#a8046c] via-65% to-[#330626] to-100%... shadow-lg flex flex-col items-center pt-10">
+    <div className=" fixed h-screen w-80 bg-gradient-to-r from-[#18031b] from-0% via-[#030f46] via-30% via-[#a8046c] via-65% to-[#330626] to-100%... shadow-lg flex flex-col items-center pt-10">
   {/* Profile Section */}
   <div className="flex flex-col items-center space-y-4">
     <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-1 shadow-lg">

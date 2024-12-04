@@ -4,7 +4,7 @@ import {Link} from "react-router-dom"
 const Signup = () => {
     return (
         <>
-            <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+            <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-black mb-10">
                 <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 fade-in">
                     <h2 className="text-3xl font-bold text-center text-purple-700 mb-3">Welcome to Codemate!</h2>
                     <p className="text-center text-pink-500 mb-3 font-semibold">Join and start building meaningful connections.</p>

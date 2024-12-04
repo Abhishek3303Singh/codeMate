@@ -37,9 +37,9 @@ const LoginPage = () => {
               <input type="checkbox" className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded" />
               <span className="ml-2 text-gray-600">Remember me</span>
             </label>
-            <a href="#" className="text-indigo-600 hover:underline">
+            <Link to="#" className="text-indigo-600 hover:underline">
               Forgot password?
-            </a>
+            </Link>
           </div>
 
           <button

@@ -4,7 +4,7 @@ import profilePic from "../images/profile.jpg"
 
 const FeedCard = () => {
   return (
-    <div className="w-full flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="w-full flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white mb-10">
   {/* Card */}
   <div className="relative w-80 h-[600px] bg-gradient-to-br from-gray-800/40 to-gray-700/30 backdrop-blur-lg rounded-2xl shadow-xl overflow-hidden border border-gray-500/30">
     {/* Image */}

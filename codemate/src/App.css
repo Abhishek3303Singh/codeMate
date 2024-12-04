@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+}
+
 .bg-codemate {
     position: relative;
     background-image: url('./images/bg.jpg');
@@ -20,6 +28,8 @@
     background: rgba(0, 0, 0, 0.9); /* Black shadow with 50% opacity */
     z-index: -1; /* Ensures the overlay is below the text */
   }
+
+
 
   @layer utilities {
     .text-shadow-glow {
