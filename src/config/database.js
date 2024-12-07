@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
+require('dotenv').config()
+require("dotenv").config({ path: "config/config.env" });
 
 const connectDB = async ()=>{
-    await mongoose.connect("mongodb+srv://abhishek50503:Aksingh%4050503@testingmongocloud.fiddxnz.mongodb.net/CodeMate")
+    // console.log(process.env.MONGO_DB_PORT)
+    await mongoose.connect(process.env.MONGO_DB_PORT)
 }
 
 

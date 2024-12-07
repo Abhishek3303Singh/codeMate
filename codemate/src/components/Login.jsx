@@ -1,13 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { login } from '../store/signupSlice';
 const LoginPage = () => {
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const dispatch = useDispatch()
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 fade-in">
         <h2 className="text-3xl font-bold text-center text-purple-700 mb-4">Welcome Back!</h2>
         <p className="text-center text-pink-500 mb-6 font-semibold">Log in to continue your journey on Codemate.</p>
 
-        <form>
+        <form onSubmit={(e)=>{
+          e.preventDefault()
+          dispatch(login(email, password))
+        }}>
           <div className="mb-4">
             <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
               Email Address
@@ -17,6 +26,7 @@ const LoginPage = () => {
               type="email"
               placeholder="Enter your email"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              onChange={(e)=>{setEmail(e.target.value)}}
             />
           </div>
 
@@ -29,6 +39,7 @@ const LoginPage = () => {
               type="password"
               placeholder="Enter your password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              onChange={(e)=>{setPassword(e.target.value)}}
             />
           </div>
 

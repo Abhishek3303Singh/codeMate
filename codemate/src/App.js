@@ -10,7 +10,8 @@ import Sidebar from "./components/Sidebar";
 import CreateProfile from "./components/CreateProfile";
 import PrivateComponent from "./components/PrivateComponent";
 import FeedCard from "./components/FeedCard";
-
+import {ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 const Layout = () => {
   const isAuthenticated = true;
   return (
@@ -27,6 +28,7 @@ const Layout = () => {
           <Outlet />
         </div>
       </div>
+      <ToastContainer/>
     </>
   );
 };

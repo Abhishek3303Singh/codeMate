@@ -1,6 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createProfile, clearErr, resetCreated } from "../store/userProfileSlice";
+import { useDispatch, useSelector } from "react-redux"
+import {toast} from "react-toastify"
+import { useNavigate } from "react-router-dom";
+import Loader from "./Loader";
+import { STATUSES } from '../store/signupSlice'
 
 const CreateProfile = () => {
+  const { user, status, resErr, isCreated } = useSelector((state) => state.profileData)
   const [formData, setFormData] = useState({
     userName: "",
     contact: "",
@@ -12,6 +19,36 @@ const CreateProfile = () => {
     github: "",
     projects: [],
   });
+  const [previewImage, setImagePreview] = useState([])
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (resErr && user.status === "failed") {
+
+      toast.error(user.error, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        toastClassName: "Toastify__toast--error",
+        progressStyle: {
+          background: "red",
+        },
+      })
+      dispatch(clearErr())
+      dispatch(resetCreated)
+
+    }
+
+    if(isCreated && user.status==="success"){
+      navigate("/feed")
+
+    }
+  }, [resErr,isCreated, user.status])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,18 +66,35 @@ const CreateProfile = () => {
   };
 
   const handlePhotoUpload = (e) => {
-    const files = e.target.files;
-    if (files.length > 0) {
-      const newPhotos = Array.from(files).map((file) => URL.createObjectURL(file));
-      setFormData({ ...formData, photos: [...formData.photos, ...newPhotos] });
-    }
+
+
+    const files = Array.from(e.target.files)
+    // console.log(files, 'Files')
+    // setImage([])
+    setImagePreview([])
+    files.forEach((file) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        if (reader.readyState === 2) {
+          setImagePreview((old) => [...old, reader.result])
+          // setImage((old) => [...old, reader.result])
+          setFormData({ ...formData, photos: [...formData.photos, reader.result] });
+        }
+      }
+      reader.readAsDataURL(file)
+    })
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Profile Submitted:", formData);
+    dispatch(createProfile(formData))
   };
-
+if(status===STATUSES.LOADING){
+  return(
+    <Loader/>
+  )
+}
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black flex items-center justify-center p-8 mb-10">
       <form

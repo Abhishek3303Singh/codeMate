@@ -51,4 +51,21 @@ body {
     animation: fadeIn 1s ease-out forwards;
   }
   
+  /* custom cssfor toast alert */
+  
+  .Toastify__toast--success {
+    background-color: #4caf50 !important; /* Green for success */
+    color: white !important;
+  }
+  
+  .Toastify__toast--error {
+    background-color: #000000 !important; /* Red for error */
+    color: rgb(255, 0, 0) !important;
+    font-weight: bold;
+  }
+  
+  .Toastify__toast--info {
+    background-color: #2196f3 !important; /* Blue for info */
+    color: white !important;
+  }
   

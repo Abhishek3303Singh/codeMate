@@ -7,6 +7,7 @@ const router = express.Router();
 
 router.post("/signup", async (req, res) => {
   try {
+    // console.log(req.body, "checking data")
     const { firstName, lastName, contact, email, password } = req.body;
     validateSignupData(req);
     // check the email id is present or not . Id shoulds be unique
@@ -32,11 +33,23 @@ router.post("/signup", async (req, res) => {
 
       const token = await user.getJWT();
 
-      res.status(200).cookie("token", token);
-      res.status(200).send(user);
+      res.status(200).cookie("token", token,{
+        
+          httpOnly: true, // Secure and not accessible by JavaScript
+          secure: false, // Set to true in production with HTTPS
+          sameSite: "lax", // Protect against CSRF
+        
+      });
+      res.status(200).json({
+        status:"success",
+        data:[user.firstName,user.lastName,user.email,]
+      });
     }
   } catch (err) {
-    res.status(500).send("Error :" + err.message);
+    res.status(500).json({
+      status:"failed",
+      error:err.message
+    });
   }
 });
 
@@ -62,11 +75,17 @@ router.post("/login", async (req, res) => {
         const token = await userData.getJWT();
 
         res.status(200).cookie("token", token);
-        res.status(200).send("Login successfully");
+        res.status(200).json({
+          status:"success",
+          data:"Logged in successfully"
+        });
       }
     }
   } catch (err) {
-    res.status(500).send("Error:" + err.message);
+    res.status(500).json({
+      status:"failed",
+      message:err.message
+    })
   }
 });
 

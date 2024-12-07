@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 const Header = () => {
+    const {user, status,isAuthenticated,resError} = useSelector((state)=>state.signupUser)
     return (
         <>
             <div className="sticky top-0 z-50 grid grid-flow-col shadow-lg p-4 text-white
@@ -28,13 +30,23 @@ const Header = () => {
                     </ul>
 
                 </div>
+            {
+                !isAuthenticated ? 
                 <Link to="/login">
-                    <div className="col-span-1 border-yellow-300 bg-[#ff207e] text-center
-          rounded-full text-lg w[10px]">
+                <div className="col-span-1 border-yellow-300 bg-[#ff207e] text-center
+                                rounded-full text-lg w[10px]">
 
-                        <h2 className="px-1 py-2 text-white font-bold text-xl cursor-pointer">Log in</h2>
-                    </div>
-                </Link>
+                    <h2 className="px-1 py-2 text-white font-bold text-xl cursor-pointer">Log in</h2>
+                </div>
+            </Link>
+            :    <Link to="/logout">
+            <div className="col-span-1 border-yellow-300 bg-[#ff207e] text-center
+                            rounded-full text-lg w[10px]">
+
+                <h2 className="px-1 py-2 text-white font-bold text-xl cursor-pointer">Logout</h2>
+            </div>
+        </Link>
+            }
             </div>
         </>
     )

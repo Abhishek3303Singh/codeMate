@@ -1,21 +1,34 @@
 import React from 'react'
-import profilePic from "../images/profile.jpg"
 import { FiUsers, FiMail, FiBell, FiSettings } from "react-icons/fi";
+import { useSelector } from 'react-redux';
+import Loader from './Loader';
+import { useEffect } from 'react';
+import { STATUSES } from '../store/signupSlice';
 
 const Sidebar = () => {
+  const { user, status, resErr, isCreated } = useSelector((state) => state.profileData)
+  // useEffect(()=>{
+  //   if()
+  // })
+  if(status===STATUSES.LOADING){
+    return(
+      <Loader/>
+    )
+  }
   return (
     <>
     <div className=" fixed h-screen w-80 bg-gradient-to-r from-[#18031b] from-0% via-[#030f46] via-30% via-[#a8046c] via-65% to-[#330626] to-100%... shadow-lg flex flex-col items-center pt-10">
   {/* Profile Section */}
   <div className="flex flex-col items-center space-y-4">
     <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-1 shadow-lg">
+    
       <img
-        src={profilePic}
+        src={user && user?.data?.photos[0]?.url}
         alt="Profile"
         className="w-full h-full rounded-full object-cover object-top border-2 border-gray-900"
       />
     </div>
-    <h2 className="text-xl font-semibold text-white tracking-wide">__useless0118__</h2>
+    <h2 className="text-xl font-semibold text-white tracking-wide">{user && user?.data?.userName}</h2>
     <button
       className="text-sm text-gray-200 bg-gradient-to-r from-pink-500 to-red-500 px-4 py-1 rounded-full shadow-md 
       hover:from-pink-600 hover:to-red-600 hover:shadow-lg transition-all"

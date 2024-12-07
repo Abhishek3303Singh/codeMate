@@ -1,8 +1,15 @@
 const express = require("express");
-const connectDB = require("../src/cofig/database");
+const connectDB = require("./config/database");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
+const fileUpload = require('express-fileupload');
 const app = express();
+require("dotenv").config({ path: './config.env' });
 
+app.use(cors({
+  credentials: true
+}));
+// console.log(process.env.MONGO_DB_PORT)
 // const bcrypt = require("bcryptjs");
 // const jwt = require("jsonwebtoken");
 
@@ -10,10 +17,19 @@ const app = express();
 // const SECREATKEY = "PRIYAMeriJaanAbhi@Baby@0118";
 // const User = require("./models/user");
 // const UserProfile = require("./models/userProfile");
+app.use(fileUpload());
+const cloudinary = require("cloudinary").v2;
 
+          
+cloudinary.config({ 
+  cloud_name:process.env.CLOUD_NAME, 
+  api_key:process.env.API_KEY, 
+  api_secret:process.env.API_SECRET 
+});
 
-
-app.use(express.json())
+// app.use(express.json())
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use(cookieParser());
 
@@ -54,8 +70,8 @@ connectDB()
     console.log("Successflly connected to Database!!");
 
     // Frist connect server To db Then start Listening req . it is a good Practice
-    app.listen("0118", () => {
-      console.log("server is listening sucessfully on port 0118");
+    app.listen(process.env.PORT, () => {
+      console.log("server is listening sucessfully on port" + " "+process.env.PORT);
     });
   })
   .catch((err) => {

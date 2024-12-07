@@ -34,7 +34,18 @@ const userProfileSchema = new mongoose.Schema({
         }
     },
     photos:{
-        type:[String]
+        type:[
+            {
+                public_id:{
+                    type: String,
+                    required: true
+                },
+                url:{
+                    type: String,
+                    require: true
+                }
+            }
+        ]
     },
     skills:{
         type:[String],

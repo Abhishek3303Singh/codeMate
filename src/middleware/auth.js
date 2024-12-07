@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
-const SECREATKEY = "PRIYAMeriJaanAbhi@Baby@0118";
+const SECREATKEY = process.env.SECREATKEY;
 
 const isUserAuthenticated = async(req, res, next)=>{
     // Get token from cookie
@@ -19,7 +19,7 @@ const isUserAuthenticated = async(req, res, next)=>{
         // console.log(_id)
 
         const user = await User.findById(_id)
-        // console.log(user)
+        console.log(user, 'user')
         if(!user){
             throw new Error('user not valid')
         }

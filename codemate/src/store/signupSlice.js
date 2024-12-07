@@ -15,11 +15,11 @@ export const STATUSES = Object.freeze({
         resError:false,
     },
     reducers:{
-        setInitializeState(state){
-            state.status = STATUSES.LOADING,
-            state.isAuthenticated = false,
-            state.resError= false
-        },
+        // setInitializeState(state){
+        //     state.status = STATUSES.LOADING,
+        //     state.isAuthenticated = false,
+        //     state.resError= false
+        // },
         setStatus(state, action){
             state.status=action.payload
         },
@@ -37,7 +37,7 @@ export const STATUSES = Object.freeze({
   })
 
   export const {
-    setInitializeState, setStatus, setAuthentication, setUser, setError
+   setStatus, setAuthentication, setUser, setError
   } = signupSlice.actions
 
   export default signupSlice.reducer
@@ -47,32 +47,34 @@ export const STATUSES = Object.freeze({
 
   export function signup(firstName, lastName, contact, email,password){
     return async function signupThunk(dispatch, getState){
-        dispatch(initializeSignupState());
-        // dispatch(setStatus(STATUSES.LOADING))
-        // dispatch(setAuthentication(false))
-        // dispatch(setError(false))
+        // dispatch(setInitializeState());
+        dispatch(setStatus(STATUSES.LOADING))
+        dispatch(setAuthentication(false))
+        dispatch(setError(false))
         try{
             let signupResponse = await fetch("http://localhost:118/signup",{
-                method:"POST",
+                method:"post",
                 headers:{
                     "Content-Type":"application/json",
                     Accept:"application/json"
                 },
+                credentials: "include",
                 body:JSON.stringify({
 
-                    firstName:firstName,
-                    lastName:lastName,
-                    contact:contact,
-                    email:email,
-                    password:password
+                firstName:firstName,
+                lastName:lastName,
+                contact:contact,
+                email:email,
+                password:password
                     
 
                 })
             })
 
             const data = await signupResponse.json()
+            console.log(data, 'data')
             dispatch(setUser(data))
-            if(signupResponse.ok && data.status=="success"){
+            if(signupResponse.ok && data.status==="success"){
                 dispatch(setAuthentication(true))
             }
             else{
@@ -89,4 +91,57 @@ export const STATUSES = Object.freeze({
             dispatch(setError(true))
         }
     }
+  }
+ 
+
+//   LOGIN THUNK 
+
+  export function login(email,password){
+    return async function loginThunk(dispatch, getState){
+        // dispatch(setInitializeState());
+        dispatch(setStatus(STATUSES.LOADING))
+        dispatch(setAuthentication(false))
+        dispatch(setError(false))
+        try{
+            let loginResponse = await fetch("http://localhost:118/login",{
+                method:"post",
+                headers:{
+                    "Content-Type":"application/json",
+                    Accept:"application/json"
+                },
+                credentials: "include",
+                body:JSON.stringify({
+                email:email,
+                password:password
+                })
+            })
+
+            const data = await loginResponse.json()
+            console.log(data, 'data')
+            dispatch(setUser(data))
+            if(loginResponse.ok && data.status==="success"){
+                dispatch(setAuthentication(true))
+            }
+            else{
+                dispatch(setError(true))
+                dispatch(setAuthentication(false))
+            }
+            dispatch(setStatus(STATUSES.SUCCESS))
+
+        }catch(err){
+            console.log(err.message)
+            dispatch(setStatus(STATUSES.ERROR))
+            dispatch(setUser(null))
+            dispatch(setAuthentication(false))
+            dispatch(setError(true))
+        }
+    }
+  }
+
+  export function clearErr() {
+    return function clearErrThunk(dispatch, getState) {
+      dispatch(setStatus(STATUSES.IDLE));
+      dispatch(setUser(null));
+      dispatch(setAuthentication(false))
+    };
   }
