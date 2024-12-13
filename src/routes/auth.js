@@ -2,6 +2,8 @@ const express = require("express");
 const { validateSignupData } = require("../utils/validator");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const { isUserAuthenticated } = require("../middleware/auth");
+const userProfile = require("../models/userProfile");
 
 const router = express.Router();
 
@@ -42,13 +44,18 @@ router.post("/signup", async (req, res) => {
       });
       res.status(200).json({
         status:"success",
-        data:[user.firstName,user.lastName,user.email,]
+        data:{
+          id:user._id,
+          firstNmae:user.firstName,
+          lastName:user.lastName,
+          email:user.email
+        }
       });
     }
   } catch (err) {
     res.status(500).json({
       status:"failed",
-      error:err.message
+      message:err.message
     });
   }
 });
@@ -63,7 +70,7 @@ router.post("/login", async (req, res) => {
     } else {
       // Check the password
       // const isPasswordValid = bcrypt.compare(password, userData.password);
-      const isPasswordValid = userData.validatePassword(password);
+      const isPasswordValid = await bcrypt.compare(password,userData.password);
       if (!isPasswordValid) {
         throw new Error("Enter Valid id or password");
       } else {
@@ -77,7 +84,12 @@ router.post("/login", async (req, res) => {
         res.status(200).cookie("token", token);
         res.status(200).json({
           status:"success",
-          data:"Logged in successfully"
+          data:{
+            id:userData._id,
+            firstName:userData.firstName,
+            lastName:userData.lastName,
+            email:userData.email
+          }
         });
       }
     }
@@ -94,10 +106,40 @@ router.get("/logout", async(req, res)=>{
         res.status(200).cookie("token", null,{
             expires:new Date(Date.now())
         })
-    res.status(200).send("Logged out!")
+    res.status(200).json({
+      status:"success",
+      message:"Logged out!"
+    })
     }
     catch(err){
-        res.status(400).send("Error:" + err.message)
+        res.status(400).json({
+          status:"failed",
+          message:err.message
+        })
     }
+})
+
+router.get("/get/user", isUserAuthenticated, async(req, res)=>{
+  try{
+    // const profileData = await userProfile.findOne({userId:req.user._id})
+    // if(!profileData){
+    //   throw new Error("Profile not found create profile")
+    // }
+    res.status(200).json({
+      status:"success",
+      data:{
+        id:req.user._id,
+        firstName:req.user.firstName,
+        lastName:req.user.lastName,
+        email:req.user.email
+      }
+    })
+
+  }catch(err){
+    res.status(400).json({
+      status:"failed",
+      message:err.message
+    })
+  }
 })
 module.exports=router

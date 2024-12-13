@@ -1,6 +1,6 @@
 import "./App.css";
 import Header from "./components/Header";
-import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider, Navigate } from "react-router-dom";
 import LoginPage from "./components/Login";
 import LandingPage from "./components/LandingPage";
 import ErrorPage from "./components/ErrorPage";
@@ -12,12 +12,24 @@ import PrivateComponent from "./components/PrivateComponent";
 import FeedCard from "./components/FeedCard";
 import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import { getUser } from "./store/signupSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
+import { STATUSES } from "./store/signupSlice";
+import Loader from "./components/Loader";
+import AllRequest from "./components/AllRequest";
 const Layout = () => {
-  const isAuthenticated = true;
+  const {isAuthenticated ,status} = useSelector((state)=>state.signupUser)
+
   return (
     <>
       <Header />
-      <div className="grid grid-flow-col grid-cols-[0.5fr_2fr] h-screen">
+      <div className={`${
+          isAuthenticated
+            ? "grid grid-flow-col grid-cols-[0.5fr_2fr]"
+            : "grid grid-cols-1"
+        } h-screen`}>
         <div className="sticky top-0">
           {/* Sidebar */}
           {isAuthenticated && <Sidebar />}
@@ -33,14 +45,32 @@ const Layout = () => {
   );
 };
 function App() {
+  const {isAuthenticated ,status} = useSelector((state)=>state.signupUser)
+  const {resErr, isCreated } = useSelector((state) => state.profileData)
+  const dispatch = useDispatch()
+
+  useEffect(()=>{
+    dispatch(getUser())
+  },[])
+  if(status===STATUSES.LOADING){
+    return <Loader/>
+  }
+
+  
+
+  
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Layout />,
+      element: <Layout/>,
       children: [
         {
           path: "/",
-          element: <LandingPage />,
+          element: !isAuthenticated 
+          ? <LandingPage /> 
+          : isCreated
+            ? <FeedCard /> 
+            : <Navigate to="/create/profile" replace />,
         },
         {
           path: "/login",
@@ -62,6 +92,10 @@ function App() {
               path: "/feed",
               element: <FeedCard />,
             },
+            {
+              path:"/all/request",
+              element:<AllRequest/>
+            }
           ],
         },
 

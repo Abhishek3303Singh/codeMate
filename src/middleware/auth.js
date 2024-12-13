@@ -19,7 +19,8 @@ const isUserAuthenticated = async(req, res, next)=>{
         // console.log(_id)
 
         const user = await User.findById(_id)
-        console.log(user, 'user')
+        // console.log(user)
+
         if(!user){
             throw new Error('user not valid')
         }
@@ -35,7 +36,10 @@ const isUserAuthenticated = async(req, res, next)=>{
         
     }
     catch(err){
-        res.status(400).send("Error:"+err.message)
+        res.status(400).json({
+            status:"failed",
+            message:err.message
+        })
     }
 }
 

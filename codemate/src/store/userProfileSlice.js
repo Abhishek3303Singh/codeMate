@@ -75,6 +75,38 @@ export function createProfile(formData) {
   };
 }
 
+// GET MY Profile
+export function myProfile() {
+  return async function myProfileThunk(dispatch, getState) {
+    // dispatch(setInitializeState());
+    // console.log("my profile running")
+    dispatch(setStatus(STATUSES.LOADING));
+ 
+    dispatch(setError(false));
+
+    try {
+      let myProfileResponse = await fetch("http://localhost:118/my/profile",{ credentials: "include",});
+      const data = await myProfileResponse.json();
+      console.log(data, "my profile data")
+    
+      dispatch(setProfile(data));
+      if (myProfileResponse.ok && data.status === "success") {
+        dispatch(setIsCreated(true));
+      } else {
+        dispatch(setError(true));
+        dispatch(setIsCreated(false));
+      }
+      dispatch(setStatus(STATUSES.SUCCESS));
+    } catch (err) {
+      console.log(err);
+      dispatch(setStatus(STATUSES.ERROR));
+      dispatch(setProfile(null));
+      dispatch(setIsCreated(false));
+      dispatch(setError(true));
+    }
+  };
+}
+
 export function clearErr() {
   return function clearErrThunk(dispatch, getState) {
     dispatch(setError(false));

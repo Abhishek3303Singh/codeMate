@@ -1,8 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../store/signupSlice";
 const Header = () => {
     const {user, status,isAuthenticated,resError} = useSelector((state)=>state.signupUser)
+    const dispatch = useDispatch()
+    const handleLogout =()=>{
+        dispatch(logout())
+    }
     return (
         <>
             <div className="sticky top-0 z-50 grid grid-flow-col shadow-lg p-4 text-white
@@ -33,19 +38,19 @@ const Header = () => {
             {
                 !isAuthenticated ? 
                 <Link to="/login">
-                <div className="col-span-1 border-yellow-300 bg-[#ff207e] text-center
+                <div className="col-span-1 border-yellow-300 bg-[#ff207e] text-center bg-gradient-to-br from-purple-500 to-pink-500
                                 rounded-full text-lg w[10px]">
 
                     <h2 className="px-1 py-2 text-white font-bold text-xl cursor-pointer">Log in</h2>
                 </div>
             </Link>
-            :    <Link to="/logout">
-            <div className="col-span-1 border-yellow-300 bg-[#ff207e] text-center
-                            rounded-full text-lg w[10px]">
+            :    
+            <div className="col-span-1 border-yellow-300 bg-[#ff207e] text-center text-center bg-gradient-to-br from-purple-500 to-pink-500
+                            rounded-full text-lg w[10px]" onClick={handleLogout}>
 
                 <h2 className="px-1 py-2 text-white font-bold text-xl cursor-pointer">Logout</h2>
             </div>
-        </Link>
+      
             }
             </div>
         </>

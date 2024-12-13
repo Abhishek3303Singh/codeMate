@@ -7,7 +7,7 @@ const cloudinary = require("cloudinary");
 //  CREATE PROFILE
 
 router.post("/profile", isUserAuthenticated, async (req, res) => {
-  console.log(req.body, 'checking data')
+  // console.log(req.body, 'checking data')
 
 
   try {
@@ -40,7 +40,7 @@ router.post("/profile", isUserAuthenticated, async (req, res) => {
       github,
       projects,
     } = req.body;
-    console.log(req.body, 'checking data2')
+    // console.log(req.body, 'checking data2')
     const profile = await new UserProfile({
       userId: req.user._id,
       userName,
@@ -75,9 +75,15 @@ router.get("/my/profile", isUserAuthenticated, async (req, res) => {
     if (!userData) {
       throw new Error("user not found please create user");
     }
-    res.status(200).send(userData);
+    res.status(200).json({
+      status:"success",
+      data:userData
+    });
   } catch (err) {
-    res.status(400).send("Error:-" + err.message);
+    res.status(400).json({
+      status:"failed",
+      message:err.message
+    });
   }
 });
 

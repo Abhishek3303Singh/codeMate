@@ -4,12 +4,25 @@ import { useSelector } from 'react-redux';
 import Loader from './Loader';
 import { useEffect } from 'react';
 import { STATUSES } from '../store/signupSlice';
+import profile from "../images/profile.png"
+import {useNavigate} from "react-router-dom"
 
 const Sidebar = () => {
   const { user, status, resErr, isCreated } = useSelector((state) => state.profileData)
-  // useEffect(()=>{
-  //   if()
-  // })
+  const {isAuthenticated ,user:userData} = useSelector((state)=>state.signupUser)
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    
+  },[status, user])
+
+function handleCreateProfile(){
+  if(isCreated){
+    navigate("/edit/profile")
+  }else{
+    navigate("create/profile")
+  }
+}
   if(status===STATUSES.LOADING){
     return(
       <Loader/>
@@ -20,20 +33,24 @@ const Sidebar = () => {
     <div className=" fixed h-screen w-80 bg-gradient-to-r from-[#18031b] from-0% via-[#030f46] via-30% via-[#a8046c] via-65% to-[#330626] to-100%... shadow-lg flex flex-col items-center pt-10">
   {/* Profile Section */}
   <div className="flex flex-col items-center space-y-4">
-    <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 p-1 shadow-lg">
+    <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-1 shadow-lg">
     
       <img
-        src={user && user?.data?.photos[0]?.url}
+        src={isCreated?user && user?.data?.photos[0]?.url:profile}
         alt="Profile"
         className="w-full h-full rounded-full object-cover object-top border-2 border-gray-900"
       />
     </div>
     <h2 className="text-xl font-semibold text-white tracking-wide">{user && user?.data?.userName}</h2>
-    <button
-      className="text-sm text-gray-200 bg-gradient-to-r from-pink-500 to-red-500 px-4 py-1 rounded-full shadow-md 
+    <h2 className="text-xl font-semibold text-white tracking-wide">{userData && userData?.data?.firstName} {" "} {userData && userData?.data?.lastName}</h2>
+    <button onClick={handleCreateProfile}
+      className="text-sm text-gray-200 bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-1 rounded-full shadow-md 
       hover:from-pink-600 hover:to-red-600 hover:shadow-lg transition-all"
     >
-      Edit Profile
+      {
+        isCreated? "Edit Profile" : "Create Profile"
+      }
+     
     </button>
   </div>
 
@@ -56,10 +73,10 @@ const Sidebar = () => {
         <span className="text-white text-2xl group-hover:text-blue-500 transition-colors">
           <FiMail />
         </span>
-        <span
+        <span onClick={()=>navigate("/all/request")}
           className="text-lg font-medium text-gray-300 group-hover:text-white transition-all"
         >
-          All Requests
+          Interested
         </span>
       </li>
       {/* Notifications */}

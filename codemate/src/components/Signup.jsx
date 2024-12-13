@@ -6,6 +6,7 @@ import { signup } from '../store/signupSlice'
 import {toast} from "react-toastify"
 import Loader from './Loader'
 import { STATUSES } from '../store/signupSlice'
+import { myProfile } from '../store/userProfileSlice'
 
 const Signup = () => {
     const [firstName, setFirstName] = useState("")
@@ -18,8 +19,8 @@ const Signup = () => {
     const {user, status,isAuthenticated,resError} = useSelector((state)=>state.signupUser)
 
     useEffect(()=>{
-        if(resError && user.status=="failed"){
-            toast.error(user.error,{
+        if(resError && user?.status=="failed"){
+            toast.error(user.message,{
                 position:"top-right",
                 autoClose:5000,
                 hideProgressBar:false,
@@ -33,11 +34,13 @@ const Signup = () => {
                   },
             })
         }
-        if(isAuthenticated && user.status==="success"){
+        if(isAuthenticated && user?.status==="success"){
+
+            dispatch(myProfile())
             navigate("/create/profile")
         }
 
-    }, [resError,user.status,isAuthenticated])
+    }, [dispatch,resError,user?.status,isAuthenticated])
 
     if(status===STATUSES.LOADING){
         return(

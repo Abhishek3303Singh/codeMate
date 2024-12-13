@@ -11,6 +11,7 @@ router.post(
   async (req, res) => {
     try {
       const receiverId = req.params.senderId;
+      console.log(receiverId)
       const senderId = req.user._id;
       const status = req.params.status;
       const senderProfileId = await UserProfile.findOne({
@@ -93,6 +94,7 @@ router.post(
       const isAllowed = allowedStatus.includes(status);
       if (!isAllowed) {
         return res.status(400).json({
+          status:"failed",
           message: "status is not allowed",
         });
       }
@@ -103,6 +105,7 @@ router.post(
       });
       if (!isConnectionRequest) {
         return res.status(404).json({
+          status:"failed",
           message: "connection is not possible",
         });
       }
@@ -110,11 +113,13 @@ router.post(
         isConnectionRequest.status = status
         isConnectionRequest.save()
         return res.status(200).json({
-          data:isConnectionRequest
+          status:"success",
+          data:"Connection successfully"
         })
       }
     } catch (err) {
       res.status(400).json({
+        status:"failed",
         message: "Error: " + err.message,
       });
     }

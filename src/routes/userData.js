@@ -9,17 +9,18 @@ userRaoute.get("/my/all/request", isUserAuthenticated, async(req, res)=>{
     try{
         const loggedInUser = req.user
         // status must be interested 
-        console.log("running")
+        // console.log("running")
 
-        const connectionReq = await ConnectionRequest.findOne({
+        const connectionReq = await ConnectionRequest.find({
         receiverId:loggedInUser._id , status:"interested"
-        }).populate("receiverProfileId", "userName photos")
+        }).populate("senderProfileId", "userName photos").populate("senderId", "firstName lastName")
         if(!connectionReq){
             return res.status(404).json({
                 message:"No connection request found"
             })
         }
         return res.status(200).json({
+            status:"success",
             data:connectionReq
         })
 

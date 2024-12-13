@@ -1,12 +1,45 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { login } from '../store/signupSlice';
+import { useEffect } from 'react';
+import { myProfile } from '../store/userProfileSlice';
+import {toast} from "react-toastify"
+import { useSelector } from 'react-redux';
+
 const LoginPage = () => {
+  const {isAuthenticated ,status, user,resError} = useSelector((state)=>state.signupUser)
+  const {resErr, isCreated } = useSelector((state) => state.profileData)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  useEffect(()=>{
+    if(isAuthenticated&&status==="success"){
+      dispatch(myProfile())
+   
+      navigate("/feed")
+      
+    }
+    if(resError && user?.status=="failed"){
+      toast.error(user.message,{
+          position:"top-right",
+          autoClose:5000,
+          hideProgressBar:false,
+          closeOnClick:true,
+          pauseOnHover:true,
+          draggable:true,
+          theme:"colored",
+          toastClassName:"Toastify__toast--error",
+          progressStyle: {
+              background: "red", 
+            },
+      })
+  }
+    
+  }, [resError,isAuthenticated,user])
+
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8 fade-in">
