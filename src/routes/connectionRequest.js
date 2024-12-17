@@ -2,25 +2,27 @@ const express = require("express");
 const ConnectionRequest = require("../models/connectionRequest");
 const { isUserAuthenticated } = require("../middleware/auth");
 const User = require("../models/user");
-const UserProfile = require("../models/userProfile")
+const UserProfile = require("../models/userProfile");
 const router = express.Router();
 // api for send connection request
 router.post(
   "/request/send/:status/:senderId",
   isUserAuthenticated,
   async (req, res) => {
+    // const io = req.app.io;
+    const io = req.app.get('io');
+
     try {
       const receiverId = req.params.senderId;
-      console.log(receiverId)
+      console.log(receiverId);
       const senderId = req.user._id;
       const status = req.params.status;
       const senderProfileId = await UserProfile.findOne({
-        userId:senderId
-      })
+        userId: senderId,
+      });
       const receiverProfileId = await UserProfile.findOne({
-        userId:receiverId
-      })
-      
+        userId: receiverId,
+      });
 
       // validate data
 
@@ -40,6 +42,7 @@ router.post(
       });
       if (exsistConnection) {
         return res.status(400).json({
+          status:"failed",
           message: "Request already exist",
         });
       }
@@ -63,17 +66,37 @@ router.post(
         receiverId,
         status,
         senderProfileId,
-        receiverProfileId
+        receiverProfileId,
       });
       await connection.save();
+      // Emit WebSocket Event
+      if (!io) {
+        console.log('Socket.io instance not found!');
+        return res.status(500).json({ message: 'Socket.io not initialized', status: 'Failed' });
+      }
+      // console.log(receiverId.toString(), "receiver id ");
+      // console.log("Rooms:", io.sockets.adapter.rooms);
+    
+      io.to(receiverId.toString()).emit("newConnectionRequest", {
+        senderId,
+        receiverId,
+        message: `${req.user.firstName} ${status} ${
+          status === "interested" ? "in" : ""
+        } you `,
+      
+      });
+      // console.log(`Emitting newConnectionRequest to room: ${receiverId}`);
+
       res.status(200).json({
-        message: `${req.user.firstName} ${status} ${status==="interested"? "in" : ""} you `,
+        message: `${req.user.firstName} ${status} ${
+          status === "interested" ? "in" : ""
+        } you `,
         status: "success",
       });
     } catch (err) {
       res.status(400).json({
-        message: "Error" + err.message,
-        status: "Faield",
+        message: err.message,
+        status: "failed",
       });
     }
   }
@@ -94,32 +117,31 @@ router.post(
       const isAllowed = allowedStatus.includes(status);
       if (!isAllowed) {
         return res.status(400).json({
-          status:"failed",
+          status: "failed",
           message: "status is not allowed",
         });
       }
       const isConnectionRequest = await ConnectionRequest.findOne({
-        _id:requestedId,
-        receiverId:loggedInUser._id,
+        _id: requestedId,
+        receiverId: loggedInUser._id,
         status: "interested",
       });
       if (!isConnectionRequest) {
         return res.status(404).json({
-          status:"failed",
+          status: "failed",
           message: "connection is not possible",
         });
-      }
-      else{
-        isConnectionRequest.status = status
-        isConnectionRequest.save()
+      } else {
+        isConnectionRequest.status = status;
+        isConnectionRequest.save();
         return res.status(200).json({
-          status:"success",
-          data:"Connection successfully"
-        })
+          status: "success",
+          data: "Connection successfully",
+        });
       }
     } catch (err) {
       res.status(400).json({
-        status:"failed",
+        status: "failed",
         message: "Error: " + err.message,
       });
     }
@@ -128,6 +150,4 @@ router.post(
   }
 );
 
-
 module.exports = router;
- 

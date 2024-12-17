@@ -5,11 +5,83 @@ import { STATUSES } from "../store/signupSlice";
 import { feedData } from "../store/feedSlice";
 import Loader from "./Loader";
 import { toast } from "react-toastify"
+import socket, { joinRoom } from "../socket";
 
 const FeedCard = () => {
   const dispatch = useDispatch();
   const { status, feed, resError } = useSelector((state) => state.feed);
+  const { isAuthenticated, user: userData } = useSelector((state) => state.signupUser)
   const [currentFeed, setCurrentFeed] = useState([]);
+  const [realTimeUpdate, setRealTimeUpdate] = useState([]);
+
+
+  useEffect(() => {
+ 
+    const userId = userData?.data?.id;
+    // Log the socket connection status
+    socket.on('connect', () => {
+      console.log('Socket connected:', socket.id);
+    });
+  
+    socket.on('disconnect', () => {
+      console.log('Socket disconnected');
+    });
+  
+    // Register the user
+    socket.emit('register', userId);
+  
+    return () => {
+      socket.off('connect');
+      socket.off('disconnect');
+    };
+  }, [userData]);
+  useEffect(() => {
+    // Set up the real-time update listener
+
+    // JOINING ROOM//
+    const userId = userData?.data?.id;
+    if (userId) {
+      joinRoom(userId);
+      console.log("Socket connected:", socket.id);
+    }
+    
+
+    const handleRealTimeUpdate = (update) => {
+      console.log("Received real-time data:", update);
+      setRealTimeUpdate((prev) => [...prev, update]);
+      toast.info(update.message, {
+        position: "top-left",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        toastClassName: "Toastify__toast--success",
+        progressStyle: {
+          background: "white",
+        },
+      });
+    };
+
+    if (!socket.hasListeners("newConnectionRequest")) {
+
+    // Listen for the 'newConnectionRequest' event comming from backend
+      socket.on("newConnectionRequest", handleRealTimeUpdate);
+      console.log("Listening for realTimeUpdate events");
+    }
+
+    // socket.on("realTimeUpdate", handleRealTimeUpdate);
+    // console.log("Listening for realTimeUpdate events");
+
+    return () => {
+      socket.off("newConnectionRequest", handleRealTimeUpdate);
+    };
+
+  }, [userData])
+
+ 
+  
 
   useEffect(() => {
     dispatch(feedData());
@@ -35,27 +107,27 @@ const FeedCard = () => {
   if (!currentFeed || currentFeed.length === 0) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black mb-6">
-      <div className="flex flex-col items-center p-6 rounded-2xl w-96 h-auto border-4 border-pink-500 bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-2xl">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" // Replace with a better "no data" icon if needed
-          alt="No Data"
-          className="w-32 h-32 mb-6"
-        />
-        <h1 className="font-bold text-2xl text-white mb-4 text-center">
-          Oh no! No more data to show 😮
-        </h1>
-        <p className="text-gray-300 text-center mb-6">
-          Looks like you’ve reached the end. Check back later for more updates!
-        </p>
-        <button
-          onClick={() => window.location.reload()} // Replace with your action, e.g., fetch new data
-          className="px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-transform transform hover:scale-105"
-        >
-          Refresh Feed
-        </button>
+        <div className="flex flex-col items-center p-6 rounded-2xl w-96 h-auto border-4 border-pink-500 bg-gradient-to-b from-gray-700 via-gray-800 to-gray-900 shadow-2xl">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/2748/2748558.png" // Replace with a better "no data" icon if needed
+            alt="No Data"
+            className="w-32 h-32 mb-6"
+          />
+          <h1 className="font-bold text-2xl text-white mb-4 text-center">
+            Oh no! No more data to show 😮
+          </h1>
+          <p className="text-gray-300 text-center mb-6">
+            Looks like you’ve reached the end. Check back later for more updates!
+          </p>
+          <button
+            onClick={() => window.location.reload()} // Replace with your action, e.g., fetch new data
+            className="px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-transform transform hover:scale-105"
+          >
+            Refresh Feed
+          </button>
+        </div>
       </div>
-    </div>
-    
+
     );
   }
 
@@ -71,21 +143,51 @@ const FeedCard = () => {
 
   const handleInterested = async () => {
     try {
-      await fetch(`http://localhost:118/request/send/interested/${currentFeed[0]?.userId}`, { method: "post", credentials: "include", });
+      const apiRes = await fetch(`http://localhost:118/request/send/interested/${currentFeed[0]?.userId}`, { method: "post", credentials: "include", });
+      
+      const apiResJson = await apiRes.json()
+      // console.log(apiResJson, 'intrested res')
+      if (socket && socket.connected) {
+        const userId = userData?.data?.id
+        socket.emit("interestSent", { userId });
+        // socket.emit("realTimeUpdate", { message: "Test message" });  // Test event
+      console.log("Socket connected and interestSent emitted");
+        console.log("Socket connected");
+      } else {
+        console.log("Socket not connected");
+      }
       setCurrentFeed((prev) => prev.slice(1)); // Remove the first index user from Array
-      toast.success("Request sent", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "colored",
-        toastClassName: "Toastify__toast--success",
-        progressStyle: {
-          background: "#0dff3e",
-        },
-      })
+      if( apiResJson && apiResJson?.status==="failed"){
+        toast.error(apiResJson?.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+          toastClassName: "Toastify__toast--error",
+          progressStyle: {
+            background: "rgb(255, 0, 0)",
+          },
+        })
+      }else{
+        toast.success("Request sent", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "colored",
+          toastClassName: "Toastify__toast--seccess",
+          progressStyle: {
+            background: "#0dff3e",
+          },
+        })
+        
+      }
+
     } catch (error) {
       console.error("Error accepting user:", error);
     }

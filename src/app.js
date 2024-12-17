@@ -4,7 +4,13 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const fileUpload = require('express-fileupload');
 const app = express();
+const {Server} = require("socket.io")
 require("dotenv").config({ path: './config.env' });
+
+
+const http = require("http")
+const server = http.createServer(app);
+
 
 app.use(cors({
   credentials: true
@@ -32,7 +38,42 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use(cookieParser());
+//// Createing websocket server
+const io = new Server(server,{
+  cors: {
+    origin: "http://localhost:3000", // our frontend URL
+    credentials: true,
+    methods: ["GET", "POST"],
+},
+})
+// socket.io connection
+io.on('connection',(socket)=>{
+  // console.log("User connected: ", socket.id)
+  // console.log("Current rooms: ", io.sockets.adapter.rooms);
+  // Listen for the user joining there room
+  socket.on('joinRoom',(userId)=>{
+    socket.join(userId) // User joins a room named after their ID
+    // console.log(`User joined room: ${userId}`)
+  })
+    // Listen for the 'interestSent' event
+    socket.on('interestSent', (data) => {
+      
+      // console.log("Server received interestSent from user", socket.id);
+  
+      // Emit the real-time update to the room (or to all clients)
+      // If we want to send it to a specific user, you can emit it to their room
+      socket.emit('realTimeUpdate', { message: "User has shown interest!" });
+  
+      // Optionally we can also broadcast to other users in the room (if any)
+      // io.to(userId).emit('realTimeUpdate', { message: "User has shown interest!" });
+    });
+  socket.on('disconnect',()=>{
+    console.log('user disconnected')
+  })
+})
 
+// Attached io to app object now io instance is globally available available 
+app.set('io', io)
 /// Auth Router
 const userAuth = require("./routes/auth")
 
@@ -70,7 +111,7 @@ connectDB()
     console.log("Successflly connected to Database!!");
 
     // Frist connect server To db Then start Listening req . it is a good Practice
-    app.listen(process.env.PORT, () => {
+    server.listen(process.env.PORT, () => {
       console.log("server is listening sucessfully on port" + " "+process.env.PORT);
     });
   })
