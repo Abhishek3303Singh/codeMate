@@ -6,6 +6,7 @@ const fileUpload = require('express-fileupload');
 const app = express();
 const {Server} = require("socket.io")
 require("dotenv").config({ path: './config.env' });
+const ChatMessage = require("./models/chats")
 
 
 const http = require("http")
@@ -13,6 +14,7 @@ const server = http.createServer(app);
 
 
 app.use(cors({
+  origin:"http://localhost:3000",
   credentials: true
 }));
 // console.log(process.env.MONGO_DB_PORT)
@@ -46,6 +48,10 @@ const io = new Server(server,{
     methods: ["GET", "POST"],
 },
 })
+
+// careate a map to store connected user who is connected to check online status
+
+const onlineUsers = new Map()
 // socket.io connection
 io.on('connection',(socket)=>{
   // console.log("User connected: ", socket.id)
@@ -53,6 +59,10 @@ io.on('connection',(socket)=>{
   // Listen for the user joining there room
   socket.on('joinRoom',(userId)=>{
     socket.join(userId) // User joins a room named after their ID
+
+    // storing users in map who is joining the room 
+    onlineUsers.set(userId, socket.id)
+    io.emit("updateOnlineUsers", Array.from(onlineUsers.keys())); // Notify all clients
     // console.log(`User joined room: ${userId}`)
   })
     // Listen for the 'interestSent' event
@@ -67,8 +77,55 @@ io.on('connection',(socket)=>{
       // Optionally we can also broadcast to other users in the room (if any)
       // io.to(userId).emit('realTimeUpdate', { message: "User has shown interest!" });
     });
+
+    socket.on('sendMessage', async ({ senderId, receiverId, text }) => {
+      try {
+        // console.log(senderId, receiverId, text, 'data checking')
+        if (!senderId || !receiverId || !text) {
+          throw new Error("Something went wrong")
+        }
+    
+        const newMessage = new ChatMessage({ senderId, receiverId, text });
+        await newMessage.save();
+    
+        // Emit the message to the sender and receiver's room
+        io.to(senderId.toString()).emit("receiveMessage", {
+          senderId,
+          receiverId,
+          text,
+          timestamp: newMessage.timestamp,
+        });
+    
+        io.to(receiverId.toString()).emit("receiveMessage", {
+          senderId,
+          receiverId,
+          text,
+          timestamp: newMessage.createdAt,
+        });
+      } catch (error) {
+        console.error("Error sending message:", error.message);
+      }
+    });
+
+    socket.on("typing", ({ senderId, receiverId, isTyping }) => {
+      // console.log(senderId, receiverId, isTyping, 'testing typing')
+      const room = receiverId; // Assuming each user has a unique room ID
+      // console.log("Emitting userTyping to room:", room, "Data:", { senderId, isTyping });
+      socket.to(room).emit("userTyping", { typingUserId: senderId, isTyping });
+    });
+    
+    
   socket.on('disconnect',()=>{
+   
+    //   Finding disconnected user through socket id if present means any user disconnected 
+    //  then i m removing thyem from my map.
+    const disconnectedUserId = Array.from(onlineUsers.keys()).find(
+      (key)=>onlineUsers.get(key)===socket.id)
+      if(disconnectedUserId){
+        onlineUsers.delete(disconnectedUserId)
+      }
     console.log('user disconnected')
+    io.emit("updateOnlineUsers", Array.from(onlineUsers.keys())) // Notify all clients that is this user is ofline
   })
 })
 
@@ -100,6 +157,9 @@ app.use("/",userData)
 const feed = require("./routes/feed")
 app.use("/", feed)
 
+
+const chat = require('./routes/chatsRoute')
+app.use("/",chat)
 
 
 

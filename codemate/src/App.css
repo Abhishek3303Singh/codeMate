@@ -9,7 +9,14 @@ body {
   overflow: hidden;
   height: 100%;
 }
-
+* {
+  user-select: none; /* Prevent text selection */
+  caret-color: transparent; /* Hide the blinking text cursor */
+}
+input, textarea {
+  user-select: auto;
+  caret-color: auto;
+}
 .bg-codemate {
     position: relative;
     background-image: url('./images/bg.jpg');

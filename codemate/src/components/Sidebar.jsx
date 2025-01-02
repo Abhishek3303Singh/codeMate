@@ -5,7 +5,7 @@ import Loader from './Loader';
 import { useEffect } from 'react';
 import { STATUSES } from '../store/signupSlice';
 import profile from "../images/profile.png"
-import {useNavigate} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 
 const Sidebar = () => {
   const { user, status, resErr, isCreated } = useSelector((state) => state.profileData)
@@ -18,7 +18,7 @@ const Sidebar = () => {
 
 function handleCreateProfile(){
   if(isCreated){
-    navigate("/edit/profile")
+    navigate("/update/profile")
   }else{
     navigate("create/profile")
   }
@@ -58,6 +58,7 @@ function handleCreateProfile(){
   <div className="mt-10 w-full">
     <ul className="flex flex-col space-y-6 items-start">
       {/* Connections */}
+      <Link to="/my/match">
       <li className="flex items-center space-x-4 px-6 py-3 group cursor-pointer">
         <span className="text-white text-2xl group-hover:text-pink-500 transition-colors">
           <FiUsers />
@@ -68,6 +69,7 @@ function handleCreateProfile(){
           My Connections
         </span>
       </li>
+      </Link>
       {/* Requests */}
       <li className="flex items-center space-x-4 px-6 py-3 group cursor-pointer">
         <span className="text-white text-2xl group-hover:text-blue-500 transition-colors">

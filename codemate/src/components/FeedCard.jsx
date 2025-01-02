@@ -50,7 +50,7 @@ const FeedCard = () => {
       console.log("Received real-time data:", update);
       setRealTimeUpdate((prev) => [...prev, update]);
       toast.info(update.message, {
-        position: "top-left",
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,

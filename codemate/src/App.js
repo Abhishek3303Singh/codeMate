@@ -19,6 +19,9 @@ import { useSelector } from "react-redux";
 import { STATUSES } from "./store/signupSlice";
 import Loader from "./components/Loader";
 import AllRequest from "./components/AllRequest";
+import ConnectionsPage from "./components/ConnectionsPage";
+import UpdateProfile from "./components/UpdateProfile";
+import UserDetails from "./components/userDetails";
 const Layout = () => {
   const {isAuthenticated ,status} = useSelector((state)=>state.signupUser)
 
@@ -95,6 +98,18 @@ function App() {
             {
               path:"/all/request",
               element:<AllRequest/>
+            },
+            {
+              path:"/my/match",
+              element:<ConnectionsPage/>
+            },
+            {
+              path:"/update/profile",
+              element:<UpdateProfile/>
+            },
+            {
+              path:"/profile/details",
+              element:<UserDetails/>
             }
           ],
         },

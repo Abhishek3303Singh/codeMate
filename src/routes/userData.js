@@ -44,16 +44,20 @@ userRaoute.get("/my/connection", isUserAuthenticated, async(req, res)=>{
             {senderId:loggedInUser._id, status:"accepted"},
             {receiverId:loggedInUser._id, status:"accepted"}
         ]
-    }).populate("senderProfileId", "userName").populate("receiverProfileId", "userName")
+    }).populate("senderProfileId").populate("receiverProfileId")
 
     return res.status(200).json({
+        status:"success",
         data:connections
     })
 
     }catch(err){
         res.status(400).json({
-            message:"Error : "+err.message
+            status:"failed",
+            message:err.message,
+
         })
     }
 })
+
 module.exports = userRaoute

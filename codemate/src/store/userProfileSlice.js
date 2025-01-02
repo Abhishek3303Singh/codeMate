@@ -21,6 +21,7 @@ const userProfileSlice = createSlice({
     setProfile(state, action) {
       state.user = action.payload;
     },
+    
     setError(state, action) {
       state.resError = action.payload;
     },
@@ -118,4 +119,12 @@ export function resetCreated() {
     dispatch(setIsCreated(false));
     // dispatch(setProduct(null))
   };
+}
+
+export function updateProfile(){
+
+}
+
+export function resetUpdated(){
+  
 }
