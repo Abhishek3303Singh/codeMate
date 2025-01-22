@@ -14,7 +14,7 @@ const server = http.createServer(app);
 
 
 app.use(cors({
-  origin:"http://localhost:3000",
+  origin:process.env.FRONTEND_URL || "http://localhost:3000",
   credentials: true
 }));
 // console.log(process.env.MONGO_DB_PORT)
@@ -43,7 +43,7 @@ app.use(cookieParser());
 //// Createing websocket server
 const io = new Server(server,{
   cors: {
-    origin: "http://localhost:3000", // our frontend URL
+    origin: process.env.FRONTEND_URL || "http://localhost:3000", // our frontend URL
     credentials: true,
     methods: ["GET", "POST"],
 },
