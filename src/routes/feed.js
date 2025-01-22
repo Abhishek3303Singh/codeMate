@@ -21,7 +21,7 @@ feedRoute.get("/feed", isUserAuthenticated, async (req, res) => {
       hideUserFeed.push(usr.receiverId);
     });
     hideUserFeed.push(loggedIn._id);
-    console.log(hideUserFeed);
+    // console.log(hideUserFeed);
 
 
 
@@ -29,7 +29,7 @@ feedRoute.get("/feed", isUserAuthenticated, async (req, res) => {
       $and: [{ _id: { $nin: hideUserFeed } }, { _id: {$ne:loggedIn._id} }],
     }).select("firstName lastName _id");
     const feedUserProfileArr = [];
-    console.log(feedUserProfileArr, "feedArray");
+    // console.log(feedUserProfileArr, "feedArray");
     feedUsers.forEach((ele) => {
       feedUserProfileArr.push(ele._id);
     });

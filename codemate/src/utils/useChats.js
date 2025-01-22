@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import socket from "../socket";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const useChat = (currentUserId, otherUserId) => {
   const [messages, setMessages] = useState([]);
@@ -15,7 +16,7 @@ const useChat = (currentUserId, otherUserId) => {
     const fetchMessages = async () => {
       try {
         const response = await fetch(
-          `http://localhost:118/chats/${otherUserId}`,
+          `${apiUrl}/chats/${otherUserId}`,
           {
             credentials: "include",
           }
@@ -24,7 +25,7 @@ const useChat = (currentUserId, otherUserId) => {
           throw new Error("Failed to fetch messages");
         }
         const responseJson = await response.json();
-        console.log(responseJson?.data, "Fetched messages");
+        // console.log(responseJson?.data, "Fetched messages");
         // Sort messages by createdAt before setting state
         // const sortedMessages = (responseJson?.data || []).sort(
         //   (a, b) => new Date(a.createdAt) - new Date(b.createdAt)

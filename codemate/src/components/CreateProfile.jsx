@@ -24,7 +24,7 @@ const CreateProfile = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (resErr && user.status === "failed") {
+    if (resErr && user?.status === "failed") {
 
       toast.error(user.error, {
         position: "top-right",
@@ -48,7 +48,7 @@ const CreateProfile = () => {
       navigate("/feed")
 
     }
-  }, [resErr,isCreated, user.status])
+  }, [resErr,isCreated, user?.status])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,7 +87,7 @@ const CreateProfile = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Profile Submitted:", formData);
+    // console.log("Profile Submitted:", formData);
     dispatch(createProfile(formData))
   };
 if(status===STATUSES.LOADING){

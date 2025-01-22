@@ -11,7 +11,7 @@ import { myProfile } from '../store/userProfileSlice'
 const Signup = () => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
-    const [contact, setContact] = useState("")
+    // const [contact, setContact] = useState("")
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const dispatch = useDispatch()
@@ -57,7 +57,7 @@ const Signup = () => {
                     <form onSubmit={(e)=>{
                         e.preventDefault()
                         // console.log(firstName, lastName, contact, email, password, 'formData')
-                        dispatch(signup(firstName, lastName, contact, email,password))
+                        dispatch(signup(firstName, lastName,email,password))
 
                     }}>
                         <div className="mb-3">
@@ -86,7 +86,7 @@ const Signup = () => {
                             />
                         </div>
 
-                        <div className="mb-3">
+                        {/* <div className="mb-3">
                             <label htmlFor="contact" className="block text-gray-700 font-medium mb-2">
                                 Contact
                             </label>
@@ -97,7 +97,7 @@ const Signup = () => {
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
                                 onChange={(e)=>{setContact(e.target.value)}}
                             />
-                        </div>
+                        </div> */}
                         <div className="mb-3">
                             <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
                                 Email

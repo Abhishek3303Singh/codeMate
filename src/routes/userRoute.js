@@ -9,7 +9,6 @@ const cloudinary = require("cloudinary");
 router.post("/profile", isUserAuthenticated, async (req, res) => {
   // console.log(req.body, 'checking data')
 
-
   try {
     let images = [];
     if (typeof req.body.photos === "string") {
@@ -27,7 +26,7 @@ router.post("/profile", isUserAuthenticated, async (req, res) => {
         url: resData.secure_url,
       });
     }
-    req.body.photos=imageLinks
+    req.body.photos = imageLinks;
 
     const {
       userName,
@@ -56,13 +55,13 @@ router.post("/profile", isUserAuthenticated, async (req, res) => {
 
     const data = await profile.save();
     res.status(200).json({
-      status:"success",
-      data:data
+      status: "success",
+      data: data,
     });
   } catch (err) {
     res.status(400).json({
-      status:"failed",
-      message:err.message
+      status: "failed",
+      message: err.message,
     });
   }
 });
@@ -76,36 +75,70 @@ router.get("/my/profile", isUserAuthenticated, async (req, res) => {
       throw new Error("user not found please create user");
     }
     res.status(200).json({
-      status:"success",
-      data:userData
+      status: "success",
+      data: userData,
     });
   } catch (err) {
     res.status(400).json({
-      status:"failed",
-      message:err.message
+      status: "failed",
+      message: err.message,
     });
   }
 });
 
-router.patch(
+router.post(
   "/profile/udpdate/:userId",
   isUserAuthenticated,
   async (req, res) => {
     const userId = req.params.userId;
-    const profileData = req.body;
-    //   console.log(profileData)
+
+    const userProfileFetch = await UserProfile.findById(userId)
+    const oldPhotos = userProfileFetch.photos || []
+    // console.log(oldPhotos, 'oldphotos')
+    
+      // console.log(userId, req.body, 'checking response')
+    const { photos } = req.body;
+    // console.log(photos, 'photos')
     try {
+      if (photos.length > 0) {
+        let images = [];
+        if (typeof req.body.photos === "string") {
+          images.push(req.body.photos);
+        } else {
+          images = req.body.photos;
+        }
+        const imageLinks = [];
+        for (let i = 0; i < images.length; i++) {
+          const resData = await cloudinary.v2.uploader.upload(images[i], {
+            folder: "codemateProfile",
+          });
+          imageLinks.push({
+            public_id: resData.public_id,
+            url: resData.secure_url,
+          });
+        }
+        req.body.photos = [...imageLinks, ...oldPhotos];
+      }
+      else{
+        delete req.body.photos
+      }
       const response = await UserProfile.findByIdAndUpdate(
         userId,
-        profileData,
+        req.body,
         {
           returnDocument: "after",
           runValidators: true,
         }
       );
-      res.status(200).send(response);
+      res.status(200).json({
+        status:"success",
+        data:response
+      });
     } catch (err) {
-      res.status(400).send("Something went wrong" + err.message);
+      res.status(400).json({
+        status:"failed",
+        message:err.message
+      });
     }
   }
 );

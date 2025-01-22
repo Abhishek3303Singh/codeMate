@@ -6,6 +6,8 @@ import { feedData } from "../store/feedSlice";
 import Loader from "./Loader";
 import { toast } from "react-toastify"
 import socket, { joinRoom } from "../socket";
+import {myProfile} from '../store/userProfileSlice'
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const FeedCard = () => {
   const dispatch = useDispatch();
@@ -20,11 +22,11 @@ const FeedCard = () => {
     const userId = userData?.data?.id;
     // Log the socket connection status
     socket.on('connect', () => {
-      console.log('Socket connected:', socket.id);
+      // console.log('Socket connected:', socket.id);
     });
   
     socket.on('disconnect', () => {
-      console.log('Socket disconnected');
+      // console.log('Socket disconnected');
     });
   
     // Register the user
@@ -42,12 +44,12 @@ const FeedCard = () => {
     const userId = userData?.data?.id;
     if (userId) {
       joinRoom(userId);
-      console.log("Socket connected:", socket.id);
+      // console.log("Socket connected:", socket.id);
     }
     
 
     const handleRealTimeUpdate = (update) => {
-      console.log("Received real-time data:", update);
+      // console.log("Received real-time data:", update);
       setRealTimeUpdate((prev) => [...prev, update]);
       toast.info(update.message, {
         position: "top-right",
@@ -68,7 +70,7 @@ const FeedCard = () => {
 
     // Listen for the 'newConnectionRequest' event comming from backend
       socket.on("newConnectionRequest", handleRealTimeUpdate);
-      console.log("Listening for realTimeUpdate events");
+      // console.log("Listening for realTimeUpdate events");
     }
 
     // socket.on("realTimeUpdate", handleRealTimeUpdate);
@@ -84,6 +86,7 @@ const FeedCard = () => {
   
 
   useEffect(() => {
+    dispatch(myProfile())
     dispatch(feedData());
 
   }, [dispatch]);
@@ -134,7 +137,7 @@ const FeedCard = () => {
   // / handle pass
   const handleIgnored = async () => {
     try {
-      await fetch(`http://localhost:118/request/send/ignored/${currentFeed[0]?.userId}`, { method: "post", credentials: "include", });
+      await fetch(`${apiUrl}/request/send/ignored/${currentFeed[0]?.userId}`, { method: "post", credentials: "include", });
       setCurrentFeed((prev) => prev.slice(1)); // Remove the first index user from Array
     } catch (error) {
       console.error("Error passing user:", error);
@@ -143,7 +146,7 @@ const FeedCard = () => {
 
   const handleInterested = async () => {
     try {
-      const apiRes = await fetch(`http://localhost:118/request/send/interested/${currentFeed[0]?.userId}`, { method: "post", credentials: "include", });
+      const apiRes = await fetch(`${apiUrl}/request/send/interested/${currentFeed[0]?.userId}`, { method: "post", credentials: "include", });
       
       const apiResJson = await apiRes.json()
       // console.log(apiResJson, 'intrested res')
@@ -151,10 +154,10 @@ const FeedCard = () => {
         const userId = userData?.data?.id
         socket.emit("interestSent", { userId });
         // socket.emit("realTimeUpdate", { message: "Test message" });  // Test event
-      console.log("Socket connected and interestSent emitted");
-        console.log("Socket connected");
+      // console.log("Socket connected and interestSent emitted");
+        // console.log("Socket connected");
       } else {
-        console.log("Socket not connected");
+        // console.log("Socket not connected");
       }
       setCurrentFeed((prev) => prev.slice(1)); // Remove the first index user from Array
       if( apiResJson && apiResJson?.status==="failed"){

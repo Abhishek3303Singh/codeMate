@@ -16,10 +16,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     maxLength: 30,
   },
-  contact: {
-    type: Number,
-    required: true,
-  },
+  // contact: {
+  //   type: Number,
+  //   required: true,
+  // },
   email: {
     type: String,
     required: true,

@@ -16,18 +16,23 @@ const Header = () => {
                 <div className="flex justify-center items-center col-span-1">
                     <Link to="/">
                         <h1 className="mx-3 font-bold text-3xl text-center cursor-pointer">Codemate</h1>
+                        {/* <img src={logo} alt="Codemate" className="w-60 ml-0 h-12" /> */}
                     </Link>
                 </div>
                 <div className=" flex justify-start items-center col-span-5">
                     <ul class="flex mx-5 text-center text-white">
+                        <Link to="/my/match">
                         <li class="relative mx-3 group">
                             <span class="cursor-pointer">Match</span>
                             <span class="absolute bottom-0 left-0 h-[3px] w-0 bg-pink-500 transition-all duration-300 group-hover:w-full"></span>
                         </li>
+                        </Link>
+                        <Link to="/support">
                         <li class="relative mx-3 group">
                             <span class="cursor-pointer">Support</span>
                             <span class="absolute bottom-0 left-0 h-[3px] w-0 bg-pink-500 transition-all duration-300 group-hover:w-full"></span>
                         </li>
+                        </Link>
                         <li class="relative mx-3 group">
                             <span class="cursor-pointer">Learn</span>
                             <span class="absolute bottom-0 left-0 h-[3px] w-0 bg-pink-500 transition-all duration-300 group-hover:w-full"></span>

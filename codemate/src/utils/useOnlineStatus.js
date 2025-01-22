@@ -14,7 +14,7 @@ const useOnlineStatus =(currentUserId)=>{
 
         // Listening for updates about online users who is online or who is discconnecting
         socket.on("updateOnlineUsers", (users)=>{
-            console.log("Online Users:", users);
+            // console.log("Online Users:", users);
             setOnlineUsers(users);
 
         })

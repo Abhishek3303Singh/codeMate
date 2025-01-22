@@ -22,6 +22,9 @@ import AllRequest from "./components/AllRequest";
 import ConnectionsPage from "./components/ConnectionsPage";
 import UpdateProfile from "./components/UpdateProfile";
 import UserDetails from "./components/userDetails";
+import Support from "./components/Support";
+import { myProfile } from "./store/userProfileSlice";
+import MyProfilePage from "./components/MyProfile";
 const Layout = () => {
   const {isAuthenticated ,status} = useSelector((state)=>state.signupUser)
 
@@ -49,11 +52,15 @@ const Layout = () => {
 };
 function App() {
   const {isAuthenticated ,status} = useSelector((state)=>state.signupUser)
-  const {resErr, isCreated } = useSelector((state) => state.profileData)
+  const {resErr, isCreated, profileData } = useSelector((state) => state.profileData)
   const dispatch = useDispatch()
 
   useEffect(()=>{
     dispatch(getUser())
+    if(!profileData){
+      dispatch(myProfile())
+    }
+   
   },[])
   if(status===STATUSES.LOADING){
     return <Loader/>
@@ -83,6 +90,10 @@ function App() {
           path: "/signup",
           element: <Signup />,
         },
+        {
+          path:"/support",
+          element:<Support/>
+        },
         // private Route
         {
           element: <PrivateComponent />,
@@ -110,7 +121,12 @@ function App() {
             {
               path:"/profile/details",
               element:<UserDetails/>
+            },
+            {
+              path:"/my/profile",
+              element:<MyProfilePage/>
             }
+           
           ],
         },
 

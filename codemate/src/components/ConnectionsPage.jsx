@@ -115,11 +115,20 @@ const ConnectionsPage = () => {
                             >
                                 <FaRegComments className="text-white text-lg" />
                             </button>
-                            <button onClick={()=>handleUserDetail(user)}
+                            {userData?.data?.id === user?.senderId ?
+                            <button onClick={()=>handleUserDetail(user?.receiverProfileId)}
                                 className="p-3 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full shadow-lg hover:scale-110 transition-transform"
                             >
                                 <FaUserCircle className="text-white text-lg" />
                             </button>
+                            :
+                            <button onClick={()=>handleUserDetail(user?.senderProfileId)}
+                                className="p-3 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full shadow-lg hover:scale-110 transition-transform"
+                            >
+                                <FaUserCircle className="text-white text-lg" />
+                            </button>
+
+                            }
                         </div>
                     </div>
                 ))}

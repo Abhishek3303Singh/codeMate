@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit"
 import { setError } from "./requestSlice"
-
+const apiUrl = process.env.REACT_APP_API_URL;
+// console.log(apiUrl, 'api url')
 export const STATUSES = Object.freeze({
     IDLE: "idle",
     SUCCESS: "success",
@@ -37,7 +38,7 @@ export function getAllconnection(){
        try{
         dispatch(setStatus(STATUSES.LOADING))
         dispatch(setError(false))
-        const connectionResp = await fetch("http://localhost:118/my/connection",{credentials:'include'})
+        const connectionResp = await fetch(`${apiUrl}/my/connection`,{credentials:'include'})
         const connectionRespJson = await connectionResp.json()
         if(connectionRespJson.status==="failed"){
             dispatch(setResError(true))

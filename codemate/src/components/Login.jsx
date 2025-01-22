@@ -5,40 +5,52 @@ import { useState } from 'react';
 import { login } from '../store/signupSlice';
 import { useEffect } from 'react';
 import { myProfile } from '../store/userProfileSlice';
-import {toast} from "react-toastify"
+import { toast } from "react-toastify"
 import { useSelector } from 'react-redux';
+import { useRef } from 'react';
 
 const LoginPage = () => {
-  const {isAuthenticated ,status, user,resError} = useSelector((state)=>state.signupUser)
-  const {resErr, isCreated } = useSelector((state) => state.profileData)
+  const { isAuthenticated, status, user, resError } = useSelector((state) => state.signupUser)
+  const { resErr, isCreated } = useSelector((state) => state.profileData)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  useEffect(()=>{
-    if(isAuthenticated&&status==="success"){
+  const isTostShown = useRef(false)
+  useEffect(() => {
+    if (isAuthenticated && status === "success") {
       dispatch(myProfile())
-   
+
       navigate("/feed")
-      
+
     }
-    if(resError && user?.status=="failed"){
-      toast.error(user.message,{
-          position:"top-right",
-          autoClose:5000,
-          hideProgressBar:false,
-          closeOnClick:true,
-          pauseOnHover:true,
-          draggable:true,
-          theme:"colored",
-          toastClassName:"Toastify__toast--error",
-          progressStyle: {
-              background: "red", 
-            },
+    else if (!isTostShown.current && resError && user?.status == "failed") {
+      // console.log(user, 'user-login')
+      toast.error(user.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "colored",
+        toastClassName: "Toastify__toast--error",
+        progressStyle: {
+          background: "red",
+        },
       })
-  }
-    
-  }, [resError,isAuthenticated,user])
+      isTostShown.current = true
+
+      // cleanup to reset flag
+
+      return () => {
+        isTostShown.current = false
+      }
+    }
+
+  }, [resError, isAuthenticated, user])
+
+
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-gray-900 via-gray-800 to-black">
@@ -46,7 +58,7 @@ const LoginPage = () => {
         <h2 className="text-3xl font-bold text-center text-purple-700 mb-4">Welcome Back!</h2>
         <p className="text-center text-pink-500 mb-6 font-semibold">Log in to continue your journey on Codemate.</p>
 
-        <form onSubmit={(e)=>{
+        <form onSubmit={(e) => {
           e.preventDefault()
           dispatch(login(email, password))
         }}>
@@ -59,7 +71,7 @@ const LoginPage = () => {
               type="email"
               placeholder="Enter your email"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              onChange={(e)=>{setEmail(e.target.value)}}
+              onChange={(e) => { setEmail(e.target.value) }}
             />
           </div>
 
@@ -72,7 +84,7 @@ const LoginPage = () => {
               type="password"
               placeholder="Enter your password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              onChange={(e)=>{setPassword(e.target.value)}}
+              onChange={(e) => { setPassword(e.target.value) }}
             />
           </div>
 

@@ -33,6 +33,7 @@ function handleCreateProfile(){
     <div className=" fixed h-screen w-80 bg-gradient-to-r from-[#18031b] from-0% via-[#030f46] via-30% via-[#a8046c] via-65% to-[#330626] to-100%... shadow-lg flex flex-col items-center pt-10">
   {/* Profile Section */}
   <div className="flex flex-col items-center space-y-4">
+    <Link to="/my/profile">
     <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 p-1 shadow-lg">
     
       <img
@@ -41,7 +42,10 @@ function handleCreateProfile(){
         className="w-full h-full rounded-full object-cover object-top border-2 border-gray-900"
       />
     </div>
+    </Link>
+    <Link to="/my/profile">
     <h2 className="text-xl font-semibold text-white tracking-wide">{user && user?.data?.userName}</h2>
+    </Link>
     <h2 className="text-xl font-semibold text-white tracking-wide">{userData && userData?.data?.firstName} {" "} {userData && userData?.data?.lastName}</h2>
     <button onClick={handleCreateProfile}
       className="text-sm text-gray-200 bg-gradient-to-r from-purple-500 to-pink-500 px-4 py-1 rounded-full shadow-md 

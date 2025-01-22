@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+const apiUrl = process.env.REACT_APP_API_URL;
 export const STATUSES = Object.freeze({
   IDLE: "idle",
   SUCCESS: "success",
@@ -42,14 +43,14 @@ export default signupSlice.reducer;
 
 // thunk for signup
 
-export function signup(firstName, lastName, contact, email, password) {
+export function signup(firstName, lastName,email, password) {
   return async function signupThunk(dispatch, getState) {
     // dispatch(setInitializeState());
     dispatch(setStatus(STATUSES.LOADING));
     dispatch(setAuthentication(false));
     dispatch(setError(false));
     try {
-      let signupResponse = await fetch("http://localhost:118/signup", {
+      let signupResponse = await fetch(`${apiUrl}/signup`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -59,14 +60,13 @@ export function signup(firstName, lastName, contact, email, password) {
         body: JSON.stringify({
           firstName: firstName,
           lastName: lastName,
-          contact: contact,
           email: email,
           password: password,
         }),
       });
 
       const data = await signupResponse.json();
-      console.log(data, "data");
+      // console.log(data, "data");
       dispatch(setUser(data));
       if (signupResponse.ok && data.status === "success") {
         dispatch(setAuthentication(true));
@@ -94,7 +94,7 @@ export function login(email, password) {
     dispatch(setAuthentication(false));
     dispatch(setError(false));
     try {
-      let loginResponse = await fetch("http://localhost:118/login", {
+      let loginResponse = await fetch(`${apiUrl}/login`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -108,7 +108,7 @@ export function login(email, password) {
       });
 
       const data = await loginResponse.json();
-      console.log(data, "data");
+      // console.log(data, "data");
       dispatch(setUser(data));
       if (loginResponse.ok && data.status === "success") {
         dispatch(setAuthentication(true));
@@ -136,7 +136,7 @@ export function getUser() {
     dispatch(setAuthentication(false));
     dispatch(setError(false));
     try {
-      let userResponse = await fetch("http://localhost:118/get/user", {
+      let userResponse = await fetch(`${apiUrl}/get/user`, {
         credentials: "include",
       });
 
@@ -167,7 +167,7 @@ export function logout() {
     dispatch(setAuthentication(false));
     dispatch(setError(false));
     try {
-      let userResponse = await fetch("http://localhost:118/logout",{credentials: 'include',});
+      let userResponse = await fetch(`${apiUrl}/logout`,{credentials: 'include',});
 
       const data = await userResponse.json();
       // console.log(data, 'data')

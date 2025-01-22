@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+const apiUrl = process.env.REACT_APP_API_URL;
 export const STATUSES = Object.freeze({
   IDLE: "idle",
   SUCCESS: "success",
@@ -36,8 +37,8 @@ export function feedData(currentPage) {
     dispatch(setStatus(STATUSES.LOADING));
     dispatch(setError(false));
     try{
-      console.log(currentPage, 'page')
-        const feedResponse = await fetch(`http://localhost:118/feed?page=${currentPage}`,{credentials: 'include',})
+      // console.log(currentPage, 'page')
+        const feedResponse = await fetch(`${apiUrl}/feed?page=${currentPage}`,{credentials: 'include',})
 
         const data = await feedResponse.json()
         dispatch(setFeed(data))

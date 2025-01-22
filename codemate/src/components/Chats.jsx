@@ -99,6 +99,13 @@ const Chats = ({ chatsWith }) => {
     </div>
 
     <div className="p-4 bg-gray-900 flex items-center">
+      <form 
+      className="w-[100%]"
+      onSubmit={(e) => {
+          e.preventDefault()
+          // dispatch(login(email, password))
+          handleSendMessage()
+        }}>
       <input
         type="text"
         value={newMessage}
@@ -110,15 +117,16 @@ const Chats = ({ chatsWith }) => {
         onBlur={() => notifyTyping(false)}
         placeholder="Enter text here..."
         aria-label="Type a message"
-        className="flex-1 px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none"
+        className="flex-1 w-[80%] px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none"
       />
       <button
-        onClick={handleSendMessage}
+        type="submit"
         aria-label="Send message"
         className="ml-4 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
       >
         Send
       </button>
+      </form>
     </div>
   </div>
 </div>

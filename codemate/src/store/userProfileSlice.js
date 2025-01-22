@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+const apiUrl = process.env.REACT_APP_API_URL;
 export const STATUSES = Object.freeze({
   IDLE: "idle",
   SUCCESS: "success",
@@ -13,6 +14,7 @@ const userProfileSlice = createSlice({
     status: STATUSES.IDLE,
     resError: false,
     isCreated: false,
+    isUpdate:false
   },
   reducers: {
     setStatus(state, action) {
@@ -28,10 +30,13 @@ const userProfileSlice = createSlice({
     setIsCreated(state, action) {
       state.isCreated = action.payload;
     },
+    setIsUpdate(state,action){
+      state.isUpdate = action.payload
+    }
   },
 });
 
-export const { setStatus, setProfile, setError, setIsCreated } =
+export const { setStatus, setProfile, setError, setIsCreated, setIsUpdate } =
   userProfileSlice.actions;
 
 export default userProfileSlice.reducer;
@@ -44,9 +49,9 @@ export function createProfile(formData) {
     dispatch(setStatus(STATUSES.LOADING));
     dispatch(setIsCreated(false));
     dispatch(setError(false));
-    console.log(formData, "formdata")
+    // console.log(formData, "formdata")
     try {
-      let profileResponse = await fetch("http://localhost:118/profile", {
+      let profileResponse = await fetch(`${apiUrl}/profile`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
@@ -55,7 +60,7 @@ export function createProfile(formData) {
         credentials: "include",
         body: JSON.stringify(formData),
       });
-      console.log(profileResponse, "data");
+      // console.log(profileResponse, "data");
       const data = await profileResponse.json();
     
       dispatch(setProfile(data));
@@ -86,9 +91,9 @@ export function myProfile() {
     dispatch(setError(false));
 
     try {
-      let myProfileResponse = await fetch("http://localhost:118/my/profile",{ credentials: "include",});
+      let myProfileResponse = await fetch(`${apiUrl}/my/profile`,{ credentials: "include",});
       const data = await myProfileResponse.json();
-      console.log(data, "my profile data")
+      // console.log(data, "my profile data")
     
       dispatch(setProfile(data));
       if (myProfileResponse.ok && data.status === "success") {
@@ -121,10 +126,46 @@ export function resetCreated() {
   };
 }
 
-export function updateProfile(){
+export function updateProfile(formData, userId){
+  return async function updateProfileThunk(dispatch, getState){
+    dispatch(setStatus(STATUSES.LOADING))
+    try{
+      let updateProfileRes = await fetch(`${apiUrl}/profile/udpdate/${userId}`,
+      {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(formData),
+      })
+      const data = await updateProfileRes.json()
+      // console.log(data, 'update-profile response')
+      dispatch(setProfile(data));
+      if (updateProfileRes.ok && data.status === "success") {
+        dispatch(setIsUpdate(true));
+      } else {
+        dispatch(setError(true));
+        dispatch(setIsUpdate(false));
+      }
+      dispatch(setStatus(STATUSES.SUCCESS));
+
+
+    }catch(err){
+      console.log(err);
+      dispatch(setStatus(STATUSES.ERROR));
+      dispatch(setProfile(null));
+      dispatch(setIsUpdate(false));
+      dispatch(setError(true));
+    }
+  }
 
 }
 
 export function resetUpdated(){
-  
+  return function resetUpdatedThunk(dispatch, getState) {
+    dispatch(setIsUpdate(false));
+    // dispatch(setProduct(null))
+  };
 }

@@ -1,13 +1,14 @@
 import {io} from "socket.io-client"
+const apiUrl = process.env.REACT_APP_API_URL;
 
-const SOCKET_URL = "http://localhost:118" // backend WebSocket URL
+const SOCKET_URL = apiUrl // backend WebSocket URL
 
 
 const socket = io(SOCKET_URL,{
     withCredentials:true,
     reconnectionAttempts:5 // trying reconnectiong 5 times
 })
-socket.on("connect", () => console.log("Socket connected:", socket.id));
+socket.on("connect", () => console.log("Socket connected:"));
 socket.on("disconnect", () => console.warn("Socket disconnected"));
 export default socket;
 

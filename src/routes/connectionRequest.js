@@ -14,7 +14,7 @@ router.post(
 
     try {
       const receiverId = req.params.senderId;
-      console.log(receiverId);
+      // console.log(receiverId);
       const senderId = req.user._id;
       const status = req.params.status;
       const senderProfileId = await UserProfile.findOne({

@@ -5,6 +5,7 @@ import { connectionRequest } from '../store/requestSlice'
 import { STATUSES } from '../store/signupSlice'
 import Loader from './Loader'
 import profile from "../images/profile.png"
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const AllRequest = () => {
   const {request,status,resError} = useSelector((state)=>state.allRequest)
@@ -12,21 +13,22 @@ const AllRequest = () => {
   const [requests,setRequests] = useState([])
 
   useEffect(()=>{
+
     dispatch(connectionRequest())
   },[dispatch])
-  console.log(requests, 'requests')
 
   useEffect(()=>{
+
     if(request?.data){
       setRequests(request.data)
     }
   },[request])
+ 
   
   async function handleButton(id, status){
     try{
-      const apiResponse = await fetch(`http://localhost:118/request/review/${status}/${id}`, {method:"post", credentials: 'include',})
+      const apiResponse = await fetch(`${apiUrl}/request/review/${status}/${id}`, {method:"post", credentials: 'include',})
       const responseJson = await apiResponse.json()
-      console.log(responseJson, "resofReview")
       if(responseJson.status==="success"){
         setRequests((prevRequests) => prevRequests.filter((req) => req._id !== id));
       }
