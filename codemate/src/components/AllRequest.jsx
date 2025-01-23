@@ -57,7 +57,7 @@ const AllRequest = () => {
             key={req?._id}
             className="b-2 bg-gradient-to-br from-gray-800/40 to-gray-700/30 backdrop-blur-lg p-6 rounded-lg shadow-lg border border-gray-600 relative mx-1 mb-2"
           >
-            {/* Profile Picture */}
+           
             <div className="flex items-center space-x-4">
               <img
                 src={req?.senderProfileId?.photos[0]?.url|| profile}
@@ -69,8 +69,6 @@ const AllRequest = () => {
                 <p className="text-sm text-gray-400">{req?.senderProfileId?.userName || "User_Nmae"}</p>
               </div>
             </div>
-
-            {/* Buttons */}
             <div className="mt-6 flex justify-between">
               <button
                 onClick={() => handleButton(req?._id, "accepted")}

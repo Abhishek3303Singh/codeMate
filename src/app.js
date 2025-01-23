@@ -14,7 +14,8 @@ const server = http.createServer(app);
 
 
 app.use(cors({
-  origin:process.env.FRONTEND_URL || "http://localhost:3000",
+  origin:"https://codemateweb.netlify.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 // console.log(process.env.MONGO_DB_PORT)
@@ -43,7 +44,7 @@ app.use(cookieParser());
 //// Createing websocket server
 const io = new Server(server,{
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:3000", // our frontend URL
+    origin: "https://codemateweb.netlify.app", // our frontend URL
     credentials: true,
     methods: ["GET", "POST"],
 },

@@ -62,6 +62,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log('running', email)
   try {
     // check email exist on db
     const userData = await User.findOne({ email });

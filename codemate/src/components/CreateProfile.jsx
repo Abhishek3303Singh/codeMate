@@ -106,7 +106,7 @@ if(status===STATUSES.LOADING){
           <p className="mt-2 text-sm">Let the world know about your skills and experience!</p>
         </div>
         <div className="p-6 space-y-6">
-          {/* UserName */}
+          
           <div>
             <label className="block text-sm font-medium mb-2">User Name</label>
             <input
@@ -121,7 +121,7 @@ if(status===STATUSES.LOADING){
             />
           </div>
 
-          {/* Contact */}
+       
           <div>
             <label className="block text-sm font-medium mb-2">Contact</label>
             <input
@@ -135,7 +135,7 @@ if(status===STATUSES.LOADING){
             />
           </div>
 
-          {/* About */}
+          
           <div>
             <label className="block text-sm font-medium mb-2">About</label>
             <textarea
@@ -148,7 +148,7 @@ if(status===STATUSES.LOADING){
             ></textarea>
           </div>
 
-          {/* Gender */}
+         
           <div>
             <label className="block text-sm font-medium mb-2">Gender</label>
             <select
@@ -165,7 +165,7 @@ if(status===STATUSES.LOADING){
             </select>
           </div>
 
-          {/* Photos */}
+        
           <div>
             <label className="block text-sm font-medium mb-2">Upload Photos</label>
             <input
@@ -187,7 +187,7 @@ if(status===STATUSES.LOADING){
             </div>
           </div>
 
-          {/* Skills */}
+          
           <div>
             <label className="block text-sm font-medium mb-2">Skills</label>
             {formData.skills.map((skill, index) => (
@@ -216,7 +216,7 @@ if(status===STATUSES.LOADING){
             </button>
           </div>
 
-          {/* Experience Level */}
+          
           <div>
             <label className="block text-sm font-medium mb-2">Experience Level</label>
             <select
@@ -232,7 +232,7 @@ if(status===STATUSES.LOADING){
             </select>
           </div>
 
-          {/* GitHub */}
+          
           <div>
             <label className="block text-sm font-medium mb-2">GitHub</label>
             <input
@@ -247,7 +247,7 @@ if(status===STATUSES.LOADING){
             />
           </div>
 
-          {/* Projects */}
+          
           <div>
             <label className="block text-sm font-medium mb-2">Projects</label>
             {formData.projects.map((project, index) => (
@@ -276,7 +276,7 @@ if(status===STATUSES.LOADING){
             </button>
           </div>
 
-          {/* Submit Button */}
+          
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white py-3 rounded-lg shadow-lg hover:opacity-90 transition"
