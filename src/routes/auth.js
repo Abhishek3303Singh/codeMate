@@ -35,13 +35,20 @@ router.post("/signup", async (req, res) => {
 
       const token = await user.getJWT();
 
-      res.status(200).cookie("token", token,{
+      // res.status(200).cookie("token", token,{
         
-          httpOnly: true, // Secure and not accessible by JavaScript
-          secure: false, // Set to true in production with HTTPS
-          sameSite: "lax", // Protect against CSRF
+      //     httpOnly: true, // Secure and not accessible by JavaScript
+      //     secure: false, // Set to true in production with HTTPS
+      //     sameSite: "lax", // Protect against CSRF
         
+      // });
+      res.status(200).cookie("token", token, {
+        httpOnly: true, // Prevent client-side access
+        secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+        sameSite: "None", // Allow cross-origin requests
+        maxAge: 7 * 24 * 60 * 60 * 1000, 
       });
+      
       res.status(200).json({
         status:"success",
         data:{
@@ -82,7 +89,13 @@ router.post("/login", async (req, res) => {
         // });
         const token = await userData.getJWT();
 
-        res.status(200).cookie("token", token);
+        // res.status(200).cookie("token", token);
+        res.status(200).cookie("token", token, {
+          httpOnly: true, // Prevent client-side access
+          secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+          sameSite: "None", // Allow cross-origin requests
+          maxAge: 7 * 24 * 60 * 60 * 1000, 
+        });
         res.status(200).json({
           status:"success",
           data:{
