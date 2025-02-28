@@ -23,7 +23,7 @@ app.use(cors({
 // const jwt = require("jsonwebtoken");
 
 // const {isUserAuthenticated} = require('./middleware/auth')
-// const SECREATKEY = "PRIYAMeriJaanAbhi@Baby@0118";
+
 // const User = require("./models/user");
 // const UserProfile = require("./models/userProfile");
 app.use(fileUpload());
