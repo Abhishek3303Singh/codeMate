@@ -149,3 +149,59 @@ GET /all/connections
 GET /req/received
 
 GET /feed
+
+🖥️ Installation & Setup
+Clone the repo
+git clone https://github.com/username/codemate.git
+cd codemate
+
+Backend Setup
+cd backend
+npm install
+
+
+Create a .env file:
+
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_secret
+CLOUDINARY_KEY=your_key
+CLOUDINARY_SECRET=your_secret
+CLOUDINARY_CLOUD=your_cloud_name
+
+
+Start backend:
+
+npm start
+
+Frontend Setup
+cd frontend
+npm install
+npm run dev
+
+🌟 Key Highlights / Impact
+
+Implemented secure JWT authentication and token middleware for protected routes
+
+Designed a matching algorithm based on skills, interests, and experience
+
+Developed modular and scalable REST APIs using Express.js
+
+Built a clean, responsive UI using React + Tailwind CSS
+
+Integrated Redux Toolkit for global state and optimized API calls
+
+Engineered robust validation and sanitization at the API and schema level
+
+Implemented request workflows (like/ignore/accept/reject) to simulate real collaboration logic
+
+📈 Future Enhancements
+
+Real-time chat using WebSockets
+
+Advanced recommendation algorithm
+
+Dark mode UI
+
+Project collaboration rooms
+
+Push notifications
