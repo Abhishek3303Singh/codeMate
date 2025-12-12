@@ -194,10 +194,9 @@ Engineered robust validation and sanitization at the API and schema level
 
 Implemented request workflows (like/ignore/accept/reject) to simulate real collaboration logic
 
-📈 Future Enhancements
-
 Real-time chat using WebSockets
 
+📈 Future Enhancements
 Advanced recommendation algorithm
 
 Dark mode UI
